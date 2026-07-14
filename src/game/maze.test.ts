@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { availableDirections, createMaze, reachableCount } from './maze'
+import { availableDirections, createMaze, furnitureCells, reachableCount } from './maze'
 
 describe('procedural maze', () => {
   it('is deterministic for a seed and level', () => {
@@ -30,6 +30,28 @@ describe('procedural maze', () => {
     const second = createMaze(222, 4)
     expect(first.furniture).not.toEqual(second.furniture)
     expect(first.furniture.some((piece) => piece.kind === 'pen')).toBe(true)
+  })
+
+  it('uses collision-accurate I, L, and T furniture instead of rectangular stand-ins', () => {
+    const maze = createMaze(2026, 6)
+    expect(new Set(maze.furniture.map((piece) => piece.kind))).toEqual(new Set(['i', 'l', 't', 'pen']))
+    for (const piece of maze.furniture.filter((item) => item.kind !== 'pen')) {
+      const occupied = furnitureCells(piece)
+      expect(occupied).toHaveLength(5)
+      occupied.forEach(({ x, y }) => expect(maze.cells[y][x]).toBe(1))
+      if (piece.kind !== 'i') expect(occupied.length).toBeLessThan(piece.width * piece.height)
+    }
+  })
+
+  it('preserves connectivity and loops across randomized arrangements', () => {
+    for (let seed = 1; seed <= 20; seed += 1) {
+      const maze = createMaze(seed * 7919, seed)
+      const walkable = maze.cells.flat().filter((cell) => cell === 0).length
+      expect(reachableCount(maze)).toBe(walkable)
+      for (let y = 0; y < maze.height; y += 1) for (let x = 0; x < maze.width; x += 1) {
+        if (maze.cells[y][x] === 0) expect(availableDirections(maze, { x, y }).length).toBeGreaterThanOrEqual(2)
+      }
+    }
   })
 
   it('rotates through nine room themes', () => {

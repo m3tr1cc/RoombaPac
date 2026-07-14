@@ -1,11 +1,13 @@
 export type Direction = 'up' | 'right' | 'down' | 'left'
 export type Cell = 0 | 1
 export type Point = { x: number; y: number }
-export type FurnitureKind = 'sofa' | 'shelf' | 'kitchen' | 'bed' | 'block' | 'pen'
+export type QuarterTurn = 0 | 1 | 2 | 3
+export type FurnitureKind = 'i' | 'l' | 't' | 'pen'
 export type FurniturePiece = Point & {
   width: number
   height: number
   kind: FurnitureKind
+  rotation?: QuarterTurn
   flipX?: boolean
 }
 

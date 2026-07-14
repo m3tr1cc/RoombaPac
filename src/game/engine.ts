@@ -1,6 +1,6 @@
 import { availableDirections, createMaze, isWalkable, mulberry32 } from './maze'
 import { calculateScore, frightenedDuration, petSpeed, roombaSpeed } from './scoring'
-import { DIRS, OPPOSITE, pointKey, type Actor, type Direction, type FurnitureKind, type GameMode, type GameSnapshot, type Maze, type Pet, type Point } from './types'
+import { DIRS, OPPOSITE, pointKey, type Actor, type Direction, type FurnitureKind, type FurniturePiece, type GameMode, type GameSnapshot, type Maze, type Pet, type Point } from './types'
 
 type EngineOptions = { onSnapshot: (snapshot: GameSnapshot) => void; onSound: (sound: 'dot' | 'item' | 'pet' | 'bump' | 'hit' | 'clear' | 'reset' | 'turn') => void }
 
@@ -38,8 +38,7 @@ const PET_FRAMES: readonly DirectionFrames[] = [
   },
 ]
 const FURNITURE_RECTS: Record<FurnitureKind, AtlasRect> = {
-  sofa: [22, 930, 210, 128], shelf: [280, 928, 150, 130], kitchen: [454, 923, 307, 132],
-  bed: [815, 924, 106, 146], block: [648, 815, 65, 95], pen: [970, 811, 250, 258],
+  i: [20, 815, 150, 87], l: [210, 817, 116, 90], t: [499, 816, 111, 91], pen: [970, 811, 250, 258],
 }
 const BORDER_RECT: AtlasRect = [20, 815, 150, 87]
 const ITEM_RECTS = Array.from({ length: 16 }, (_, index) => [28 + index * 75, 621, 58, 64] as const)
@@ -67,6 +66,8 @@ export class GameEngine {
   private graceUntil = 0
   private random = mulberry32(1)
   private lastBump = 0
+  private nextPetRelease = 0
+  private nextPetReleaseAt = 0
   private atlas = new Image()
   private options: EngineOptions
 
@@ -183,7 +184,7 @@ export class GameEngine {
     const rp = actorPoint(this.roomba)
     const jiggle = this.mode === 'playing' ? Math.sin(now / 70) * cell * .035 : 0
     const roombaFrame = Math.floor(now / 105) % ROOMBA_FRAMES.length
-    const roombaRotation: Record<Direction, number> = { down: 0, left: Math.PI / 2, up: Math.PI, right: -Math.PI / 2 }
+    const roombaRotation: Record<Direction, number> = { up: 0, right: Math.PI / 2, down: Math.PI, left: -Math.PI / 2 }
     if (this.atlas.complete && this.atlas.naturalWidth) {
       this.drawAtlasSprite(ctx, ROOMBA_FRAMES[roombaFrame], ox + (rp.x + .5) * cell, oy + (rp.y + .5) * cell + jiggle, cell * 1.34, false, roombaRotation[this.roomba.direction])
     }
@@ -239,21 +240,33 @@ export class GameEngine {
       this.drawAtlasBox(ctx, BORDER_RECT, ox + (this.maze.width - .5) * cell, centerY, span * cell, cell, false, -Math.PI / 2)
     }
     for (const piece of this.maze.furniture) {
-      this.drawAtlasBox(
-        ctx,
-        FURNITURE_RECTS[piece.kind],
-        ox + (piece.x + piece.width / 2) * cell,
-        oy + (piece.y + piece.height / 2) * cell,
-        piece.width * cell,
-        piece.height * cell,
-        piece.flipX,
-      )
+      this.drawFurniturePiece(ctx, piece, cell, ox, oy)
     }
+  }
+
+  private drawFurniturePiece(ctx: CanvasRenderingContext2D, piece: FurniturePiece, cell: number, ox: number, oy: number) {
+    const centerX = ox + (piece.x + piece.width / 2) * cell
+    const centerY = oy + (piece.y + piece.height / 2) * cell
+    if (piece.kind === 'pen') {
+      this.drawAtlasBox(ctx, FURNITURE_RECTS.pen, centerX, centerY, piece.width * cell, piece.height * cell)
+      return
+    }
+    const baseWidth = piece.kind === 'i' ? 5 : 3
+    const baseHeight = piece.kind === 'i' ? 1 : 3
+    const rect = FURNITURE_RECTS[piece.kind]
+    ctx.save()
+    ctx.translate(centerX, centerY)
+    ctx.scale(piece.flipX ? -1 : 1, 1)
+    ctx.rotate((piece.rotation ?? 0) * Math.PI / 2)
+    ctx.drawImage(this.atlas, rect[0], rect[1], rect[2], rect[3], -baseWidth * cell / 2, -baseHeight * cell / 2, baseWidth * cell, baseHeight * cell)
+    ctx.restore()
   }
 
   private resetActors() {
     this.roomba = { ...this.maze.spawn, direction: 'right', nextDirection: 'right', progress: 0 }
     this.pets = Array.from({ length: 5 }, (_, id) => ({ id, x: this.maze.pen.x - 2 + id, y: this.maze.pen.y, home: { ...this.maze.pen }, direction: 'up' as Direction, nextDirection: 'up' as Direction, progress: 0, released: false, eatenUntil: 0 }))
+    this.nextPetRelease = 0
+    this.nextPetReleaseAt = this.activeMs + 1500
   }
 
   private moveRoomba(dt: number, now: number) {
@@ -273,11 +286,15 @@ export class GameEngine {
   }
 
   private movePets(dt: number, now: number) {
-    const releaseGap = Math.max(1500, 4000 - (this.level - 1) * 250)
+    const availablePets = this.level >= 3 ? this.pets.length : this.pets.length - 1
+    if (this.nextPetRelease < availablePets && this.activeMs >= this.nextPetReleaseAt) {
+      this.pets[this.nextPetRelease].released = true
+      this.nextPetRelease += 1
+      this.nextPetReleaseAt = this.activeMs + Math.max(2800, 5000 - (this.level - 1) * 200)
+    }
     this.pets.forEach((pet) => {
       const available = pet.id < 4 || this.level >= 3
       if (!available) return
-      if (!pet.released && this.activeMs > 1200 + pet.id * releaseGap) pet.released = true
       if (!pet.released || pet.eatenUntil > now) return
       this.advance(pet, petSpeed(this.level) * dt, () => {
         const options = availableDirections(this.maze, pet).filter((direction) => direction !== OPPOSITE[pet.direction])
