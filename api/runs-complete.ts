@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { createMaze } from '../src/game/maze'
-import { calculateScore } from '../src/game/scoring'
-import { getDatabase, hashPrivate, normalizeNickname, validToken } from '../src/server/db'
+import { createMaze } from '../src/game/maze.js'
+import { calculateScore } from '../src/game/scoring.js'
+import { getDatabase, hashPrivate, normalizeNickname, validToken } from '../src/server/db.js'
 
 const integer = (value: unknown) => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0
 

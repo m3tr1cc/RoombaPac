@@ -1,4 +1,4 @@
-import { DIRS, pointKey, type Direction, type Maze, type Point } from './types'
+import { DIRS, pointKey, type Direction, type Maze, type Point } from './types.js'
 
 export const MAZE_WIDTH = 31
 export const MAZE_HEIGHT = 17
