@@ -1,6 +1,6 @@
 import { availableDirections, createMaze, isWalkable, mulberry32 } from './maze'
 import { calculateScore, frightenedDuration, petSpeed, roombaSpeed } from './scoring'
-import { DIRS, OPPOSITE, pointKey, type Actor, type Direction, type GameMode, type GameSnapshot, type Maze, type Pet, type Point } from './types'
+import { DIRS, OPPOSITE, pointKey, type Actor, type Direction, type FurnitureKind, type GameMode, type GameSnapshot, type Maze, type Pet, type Point } from './types'
 
 type EngineOptions = { onSnapshot: (snapshot: GameSnapshot) => void; onSound: (sound: 'dot' | 'item' | 'pet' | 'bump' | 'hit' | 'clear' | 'reset' | 'turn') => void }
 
@@ -9,9 +9,39 @@ const FLOOR_RECTS = [
   [24, 1095, 116, 115], [165, 1095, 116, 115], [306, 1095, 116, 115], [445, 1095, 116, 115],
   [579, 1095, 110, 115], [710, 1095, 115, 115], [841, 1095, 105, 115], [966, 1095, 109, 115], [1091, 1095, 129, 115],
 ] as const
-const PET_RECTS = [
-  [479, 31, 78, 101], [804, 28, 81, 105], [31, 368, 82, 104], [481, 370, 83, 104], [817, 369, 88, 104],
-] as const
+type AtlasRect = readonly [number, number, number, number]
+type DirectionFrames = Record<Direction, readonly [AtlasRect, AtlasRect]>
+
+const ROOMBA_FRAMES: readonly AtlasRect[] = [
+  [25, 25, 88, 92], [130, 25, 88, 92], [235, 25, 88, 92], [340, 25, 88, 92],
+]
+const PET_FRAMES: readonly DirectionFrames[] = [
+  {
+    down: [[479, 31, 78, 101], [678, 143, 82, 101]], up: [[479, 143, 78, 101], [479, 250, 78, 101]],
+    right: [[579, 31, 84, 101], [678, 31, 84, 101]], left: [[579, 31, 84, 101], [678, 31, 84, 101]],
+  },
+  {
+    down: [[804, 28, 81, 105], [1110, 142, 82, 105]], up: [[804, 142, 81, 105], [804, 252, 81, 105]],
+    right: [[1005, 28, 88, 105], [1110, 28, 88, 105]], left: [[1005, 28, 88, 105], [1110, 28, 88, 105]],
+  },
+  {
+    down: [[31, 368, 82, 104], [331, 368, 82, 104]], up: [[31, 484, 82, 104], [331, 484, 82, 104]],
+    right: [[132, 368, 82, 104], [233, 368, 82, 104]], left: [[132, 368, 82, 104], [233, 368, 82, 104]],
+  },
+  {
+    down: [[481, 370, 83, 104], [678, 486, 83, 94]], up: [[481, 486, 83, 94], [481, 486, 83, 94]],
+    right: [[580, 370, 83, 104], [678, 370, 83, 104]], left: [[580, 370, 83, 104], [678, 370, 83, 104]],
+  },
+  {
+    down: [[817, 369, 88, 104], [1118, 369, 88, 104]], up: [[817, 484, 88, 104], [1118, 484, 88, 104]],
+    right: [[917, 369, 88, 104], [1018, 369, 88, 104]], left: [[917, 369, 88, 104], [1018, 369, 88, 104]],
+  },
+]
+const FURNITURE_RECTS: Record<FurnitureKind, AtlasRect> = {
+  sofa: [22, 930, 210, 128], shelf: [280, 928, 150, 130], kitchen: [454, 923, 307, 132],
+  bed: [815, 924, 106, 146], block: [648, 815, 65, 95], pen: [970, 811, 250, 258],
+}
+const BORDER_RECT: AtlasRect = [20, 815, 150, 87]
 const ITEM_RECTS = Array.from({ length: 16 }, (_, index) => [28 + index * 75, 621, 58, 64] as const)
 
 function actorPoint(actor: Actor): Point {
@@ -120,16 +150,10 @@ export class GameEngine {
     ctx.imageSmoothingEnabled = false
     for (let y = 0; y < this.maze.height; y += 1) for (let x = 0; x < this.maze.width; x += 1) {
       const dx = ox + x * cell, dy = oy + y * cell
-      if (this.atlas.complete) ctx.drawImage(this.atlas, floor[0], floor[1], floor[2], floor[3], dx, dy, cell + 0.5, cell + 0.5)
+      if (this.atlas.complete && this.atlas.naturalWidth) ctx.drawImage(this.atlas, floor[0], floor[1], floor[2], floor[3], dx, dy, cell + 0.5, cell + 0.5)
       else { ctx.fillStyle = this.maze.theme % 2 ? '#dbc49b' : '#d6bd8e'; ctx.fillRect(dx, dy, cell + 0.5, cell + 0.5) }
-      if (this.maze.cells[y][x] === 1) {
-        const edge = (x + y) % 3
-        ctx.fillStyle = edge === 0 ? '#604126' : edge === 1 ? '#775033' : '#4e6b43'
-        ctx.fillRect(dx + cell * 0.05, dy + cell * 0.08, cell * 0.9, cell * 0.84)
-        ctx.fillStyle = 'rgba(255,255,255,.16)'; ctx.fillRect(dx + cell * 0.12, dy + cell * 0.16, cell * 0.76, cell * 0.12)
-        ctx.strokeStyle = '#352719'; ctx.lineWidth = Math.max(1, cell * 0.06); ctx.strokeRect(dx + cell * 0.05, dy + cell * 0.08, cell * 0.9, cell * 0.84)
-      }
     }
+    this.drawFurniture(ctx, cell, ox, oy)
     ctx.fillStyle = '#f6df78'
     for (const key of this.maze.pellets) {
       const [x, y] = key.split(',').map(Number)
@@ -146,15 +170,23 @@ export class GameEngine {
     for (const pet of this.pets) {
       if (!pet.released || pet.eatenUntil > now) continue
       const point = actorPoint(pet)
+      const frame = Math.floor((now + pet.id * 41) / 115) % 2
+      const runningBob = Math.sin(now / 58 + pet.id) * cell * .055
       ctx.save()
       if (frightened) ctx.filter = `hue-rotate(165deg) saturate(1.8) brightness(${this.frightenedUntil - now < 1500 && Math.floor(now / 150) % 2 ? 1.8 : .85})`
-      if (this.atlas.complete) this.drawAtlas(ctx, PET_RECTS[pet.id], ox + (point.x + .5) * cell, oy + (point.y + .5) * cell, cell * 1.38)
+      if (this.atlas.complete && this.atlas.naturalWidth) {
+        this.drawAtlasSprite(ctx, PET_FRAMES[pet.id][pet.direction][frame], ox + (point.x + .5) * cell, oy + (point.y + .5) * cell + runningBob, cell * 1.42, pet.direction === 'left')
+      }
       else { ctx.fillStyle = frightened ? '#3274d9' : PET_COLORS[pet.id]; ctx.beginPath(); ctx.arc(ox + (point.x + .5) * cell, oy + (point.y + .5) * cell, cell * .42, 0, Math.PI * 2); ctx.fill() }
       ctx.restore()
     }
     const rp = actorPoint(this.roomba)
     const jiggle = this.mode === 'playing' ? Math.sin(now / 70) * cell * .035 : 0
-    if (this.atlas.complete) this.drawAtlas(ctx, [25, 25, 88, 92], ox + (rp.x + .5) * cell, oy + (rp.y + .5) * cell + jiggle, cell * 1.34)
+    const roombaFrame = Math.floor(now / 105) % ROOMBA_FRAMES.length
+    const roombaRotation: Record<Direction, number> = { down: 0, left: Math.PI / 2, up: Math.PI, right: -Math.PI / 2 }
+    if (this.atlas.complete && this.atlas.naturalWidth) {
+      this.drawAtlasSprite(ctx, ROOMBA_FRAMES[roombaFrame], ox + (rp.x + .5) * cell, oy + (rp.y + .5) * cell + jiggle, cell * 1.34, false, roombaRotation[this.roomba.direction])
+    }
     else { ctx.fillStyle = '#f4eee4'; ctx.beginPath(); ctx.arc(ox + (rp.x + .5) * cell, oy + (rp.y + .5) * cell, cell * .47, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#4b4640'; ctx.stroke() }
     if (now < this.graceUntil && Math.floor(now / 100) % 2) {
       ctx.strokeStyle = '#fff8c7'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(ox + (rp.x + .5) * cell, oy + (rp.y + .5) * cell, cell * .62, 0, Math.PI * 2); ctx.stroke()
@@ -163,6 +195,60 @@ export class GameEngine {
 
   private drawAtlas(ctx: CanvasRenderingContext2D, rect: readonly [number, number, number, number], x: number, y: number, size: number) {
     ctx.drawImage(this.atlas, rect[0], rect[1], rect[2], rect[3], x - size / 2, y - size / 2, size, size)
+  }
+
+  private drawAtlasSprite(ctx: CanvasRenderingContext2D, rect: AtlasRect, x: number, y: number, height: number, flipX = false, rotation = 0) {
+    const width = height * rect[2] / rect[3]
+    ctx.save()
+    ctx.translate(x, y)
+    ctx.rotate(rotation)
+    ctx.scale(flipX ? -1 : 1, 1)
+    ctx.drawImage(this.atlas, rect[0], rect[1], rect[2], rect[3], -width / 2, -height / 2, width, height)
+    ctx.restore()
+  }
+
+  private drawAtlasBox(ctx: CanvasRenderingContext2D, rect: AtlasRect, x: number, y: number, width: number, height: number, flipX = false, rotation = 0) {
+    ctx.save()
+    ctx.translate(x, y)
+    ctx.rotate(rotation)
+    ctx.scale(flipX ? -1 : 1, 1)
+    ctx.drawImage(this.atlas, rect[0], rect[1], rect[2], rect[3], -width / 2, -height / 2, width, height)
+    ctx.restore()
+  }
+
+  private drawFurniture(ctx: CanvasRenderingContext2D, cell: number, ox: number, oy: number) {
+    if (!(this.atlas.complete && this.atlas.naturalWidth)) {
+      for (let y = 0; y < this.maze.height; y += 1) for (let x = 0; x < this.maze.width; x += 1) {
+        if (this.maze.cells[y][x] !== 1) continue
+        ctx.fillStyle = (x + y) % 2 ? '#775033' : '#604126'
+        ctx.fillRect(ox + x * cell, oy + y * cell, cell, cell)
+      }
+      return
+    }
+
+    for (let x = 0; x < this.maze.width; x += 3) {
+      const span = Math.min(3, this.maze.width - x)
+      const centerX = ox + (x + span / 2) * cell
+      this.drawAtlasBox(ctx, BORDER_RECT, centerX, oy + cell / 2, span * cell, cell)
+      this.drawAtlasBox(ctx, BORDER_RECT, centerX, oy + (this.maze.height - .5) * cell, span * cell, cell, false, Math.PI)
+    }
+    for (let y = 1; y < this.maze.height - 1; y += 3) {
+      const span = Math.min(3, this.maze.height - 1 - y)
+      const centerY = oy + (y + span / 2) * cell
+      this.drawAtlasBox(ctx, BORDER_RECT, ox + cell / 2, centerY, span * cell, cell, false, Math.PI / 2)
+      this.drawAtlasBox(ctx, BORDER_RECT, ox + (this.maze.width - .5) * cell, centerY, span * cell, cell, false, -Math.PI / 2)
+    }
+    for (const piece of this.maze.furniture) {
+      this.drawAtlasBox(
+        ctx,
+        FURNITURE_RECTS[piece.kind],
+        ox + (piece.x + piece.width / 2) * cell,
+        oy + (piece.y + piece.height / 2) * cell,
+        piece.width * cell,
+        piece.height * cell,
+        piece.flipX,
+      )
+    }
   }
 
   private resetActors() {

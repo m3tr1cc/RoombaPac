@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createMaze, reachableCount } from './maze'
+import { availableDirections, createMaze, reachableCount } from './maze'
 
 describe('procedural maze', () => {
   it('is deterministic for a seed and level', () => {
@@ -13,6 +13,23 @@ describe('procedural maze', () => {
     expect(reachableCount(maze)).toBe(walkable)
     expect(maze.items.size).toBe(4)
     expect(maze.pellets.size).toBeGreaterThan(100)
+  })
+
+  it.each([1, 2, 3, 8, 25])('builds symmetric, loop-heavy arcade lanes for level %i', (level) => {
+    const maze = createMaze(987654, level)
+    for (let y = 0; y < maze.height; y += 1) {
+      expect(maze.cells[y]).toEqual([...maze.cells[y]].reverse())
+      for (let x = 0; x < maze.width; x += 1) {
+        if (maze.cells[y][x] === 0) expect(availableDirections(maze, { x, y }).length).toBeGreaterThanOrEqual(2)
+      }
+    }
+  })
+
+  it('procedurally varies furniture while preserving the arcade structure', () => {
+    const first = createMaze(111, 4)
+    const second = createMaze(222, 4)
+    expect(first.furniture).not.toEqual(second.furniture)
+    expect(first.furniture.some((piece) => piece.kind === 'pen')).toBe(true)
   })
 
   it('rotates through nine room themes', () => {

@@ -1,6 +1,13 @@
 export type Direction = 'up' | 'right' | 'down' | 'left'
 export type Cell = 0 | 1
 export type Point = { x: number; y: number }
+export type FurnitureKind = 'sofa' | 'shelf' | 'kitchen' | 'bed' | 'block' | 'pen'
+export type FurniturePiece = Point & {
+  width: number
+  height: number
+  kind: FurnitureKind
+  flipX?: boolean
+}
 
 export type Maze = {
   width: number
@@ -10,6 +17,7 @@ export type Maze = {
   items: Set<string>
   spawn: Point
   pen: Point
+  furniture: FurniturePiece[]
   theme: number
   seed: number
 }
