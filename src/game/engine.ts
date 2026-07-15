@@ -1,6 +1,6 @@
 import { availableDirections, createMaze, isWalkable, mulberry32, neighborPoint } from './maze'
-import { FURNITURE_ATLAS_URL, resolveFurnitureBlock, resolveFurnitureSprite } from './furnitureSprites'
-import { planFurnitureModules } from './furnitureLayout'
+import { FURNITURE_ATLAS_URL, PET_CAGE_SPRITE, resolveBoundarySprite, resolveFurnitureSprite } from './furnitureSprites'
+import { planFurniturePlacements } from './furnitureLayout'
 import { PET_ATLAS_URL, resolvePetSprite, type PetSpriteFrame } from './petSprites'
 import { ROOMBA_ATLAS_URL, resolveRoombaSprite, type RoombaSpriteFrame } from './roombaSprites'
 import { calculateScore, frightenedDuration, petSpeed, roombaSpeed } from './scoring'
@@ -217,13 +217,13 @@ export class GameEngine {
   private drawFurniturePiece(ctx: CanvasRenderingContext2D, piece: FurniturePiece, cell: number, ox: number, oy: number) {
     if (!(this.furnitureAtlas.complete && this.furnitureAtlas.naturalWidth)) return
     if (piece.kind === 'boundary') {
-      const sprite = resolveFurnitureSprite(9, piece.variant)
+      const rect = resolveBoundarySprite(piece.variant)
       for (const point of piece.cells) {
         const vertical = point.x === 0 || point.x === this.maze.width - 1
         ctx.save()
         ctx.translate(ox + (point.x + .5) * cell, oy + (point.y + .5) * cell)
         if (vertical) ctx.rotate(Math.PI / 2)
-        ctx.drawImage(this.furnitureAtlas, sprite.rect[0], sprite.rect[1], sprite.rect[2], sprite.rect[3], -cell * .55, -cell * .5, cell * 1.1, cell)
+        ctx.drawImage(this.furnitureAtlas, rect[0], rect[1], rect[2], rect[3], -cell * .55, -cell * .5, cell * 1.1, cell)
         ctx.restore()
       }
       return
@@ -231,7 +231,7 @@ export class GameEngine {
     if (piece.kind === 'pen') {
       const centerX = ox + (piece.x + piece.width / 2) * cell
       const centerY = oy + (piece.y + piece.height / 2) * cell
-      const sprite = resolveFurnitureSprite(8, piece.variant)
+      const sprite = PET_CAGE_SPRITE
       ctx.drawImage(
         this.furnitureAtlas,
         sprite.rect[0], sprite.rect[1], sprite.rect[2], sprite.rect[3],
@@ -243,17 +243,16 @@ export class GameEngine {
       return
     }
 
-    for (const module of planFurnitureModules(piece)) {
-      const sprite = resolveFurnitureBlock(piece.category, module.length, module.variant)
-      const horizontal = module.orientation === 'horizontal'
-      const centerX = ox + (module.x + (horizontal ? module.length / 2 : .5)) * cell
-      const centerY = oy + (module.y + (horizontal ? .5 : module.length / 2)) * cell
-      const drawWidth = module.length * cell
-      const drawHeight = cell
+    for (const placement of planFurniturePlacements(piece, this.maze.theme)) {
+      const sprite = resolveFurnitureSprite(placement.spriteId)
+      const centerX = ox + (placement.x + placement.width / 2) * cell
+      const centerY = oy + (placement.y + placement.height / 2) * cell
+      const drawWidth = sprite.footprint[0] * cell
+      const drawHeight = sprite.footprint[1] * cell
 
       ctx.save()
       ctx.translate(centerX, centerY)
-      if (!horizontal) ctx.rotate(Math.PI / 2)
+      ctx.rotate(placement.rotation * Math.PI / 2)
       ctx.drawImage(
         this.furnitureAtlas,
         sprite.rect[0], sprite.rect[1], sprite.rect[2], sprite.rect[3],

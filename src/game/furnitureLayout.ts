@@ -1,100 +1,132 @@
-import { DIRS, pointKey, type FurniturePiece, type Point } from './types'
+import { PLACEABLE_FURNITURE_SPRITES, resolveFurnitureSprite, type FurnitureFamily, type FurnitureSpriteDefinition } from './furnitureSprites'
+import { pointKey, type FurniturePiece, type Point, type QuarterTurn } from './types'
 
-export type FurnitureModuleLength = 1 | 2 | 3
-export type FurnitureModuleOrientation = 'horizontal' | 'vertical'
-
-export type FurnitureModule = Point & {
-  length: FurnitureModuleLength
-  orientation: FurnitureModuleOrientation
-  variant: number
+export type FurniturePlacement = Point & {
+  spriteId: string
+  rotation: QuarterTurn
+  width: number
+  height: number
+  cells: Point[]
 }
 
-type Candidate = FurnitureModule & { keys: string[]; score: number }
-
-function moduleCells(module: FurnitureModule): Point[] {
-  return Array.from({ length: module.length }, (_, index) => ({
-    x: module.x + (module.orientation === 'horizontal' ? index : 0),
-    y: module.y + (module.orientation === 'vertical' ? index : 0),
-  }))
+type OrientedSprite = {
+  definition: FurnitureSpriteDefinition
+  rotation: QuarterTurn
+  width: number
+  height: number
+  offsets: Point[]
 }
 
-function candidatesFor(uncovered: ReadonlySet<string>, piece: FurniturePiece, length: 2 | 3) {
-  const candidates: Candidate[] = []
-  for (const point of piece.cells) for (const orientation of ['horizontal', 'vertical'] as const) {
-    const module: FurnitureModule = { ...point, length, orientation, variant: 0 }
-    const cells = moduleCells(module)
-    const keys = cells.map(pointKey)
-    if (!keys.every((key) => uncovered.has(key))) continue
+function rotatePoint(point: Point, width: number, height: number, rotation: QuarterTurn): Point {
+  if (rotation === 0) return point
+  if (rotation === 1) return { x: height - 1 - point.y, y: point.x }
+  if (rotation === 2) return { x: width - 1 - point.x, y: height - 1 - point.y }
+  return { x: point.y, y: width - 1 - point.x }
+}
 
-    const alignedNeighbors = cells.reduce((total, cell) => {
-      const before = orientation === 'horizontal' ? { x: cell.x - 1, y: cell.y } : { x: cell.x, y: cell.y - 1 }
-      const after = orientation === 'horizontal' ? { x: cell.x + 1, y: cell.y } : { x: cell.x, y: cell.y + 1 }
-      return total + Number(uncovered.has(pointKey(before))) + Number(uncovered.has(pointKey(after)))
-    }, 0)
-    const perpendicularNeighbors = cells.reduce((total, cell) => {
-      const first = orientation === 'horizontal' ? { x: cell.x, y: cell.y - 1 } : { x: cell.x - 1, y: cell.y }
-      const second = orientation === 'horizontal' ? { x: cell.x, y: cell.y + 1 } : { x: cell.x + 1, y: cell.y }
-      return total + Number(uncovered.has(pointKey(first))) + Number(uncovered.has(pointKey(second)))
-    }, 0)
+function orientedSprite(definition: FurnitureSpriteDefinition, rotation: QuarterTurn): OrientedSprite {
+  const [sourceWidth, sourceHeight] = definition.footprint
+  const offsets = definition.mask.flatMap((row, y) => [...row].flatMap((value, x) => (
+    value === '1' ? [rotatePoint({ x, y }, sourceWidth, sourceHeight, rotation)] : []
+  )))
+  const sideways = rotation % 2 === 1
+  return {
+    definition,
+    rotation,
+    width: sideways ? sourceHeight : sourceWidth,
+    height: sideways ? sourceWidth : sourceHeight,
+    offsets,
+  }
+}
 
-    candidates.push({
-      ...module,
-      keys,
-      score: length * 100 + alignedNeighbors * 8 - perpendicularNeighbors * 3,
-    })
+function stableHash(value: string, seed: number) {
+  let hash = seed >>> 0
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index)
+    hash = Math.imul(hash, 0x01000193)
+  }
+  return hash >>> 0
+}
+
+function candidatePlacements(target: Point, uncovered: ReadonlySet<string>) {
+  const candidates: FurniturePlacement[] = []
+  for (const definition of PLACEABLE_FURNITURE_SPRITES) for (const rotation of definition.rotations) {
+    const oriented = orientedSprite(definition, rotation)
+    for (const targetOffset of oriented.offsets) {
+      const x = target.x - targetOffset.x
+      const y = target.y - targetOffset.y
+      const cells = oriented.offsets.map((offset) => ({ x: x + offset.x, y: y + offset.y }))
+      if (!cells.every((cell) => uncovered.has(pointKey(cell)))) continue
+      candidates.push({
+        x,
+        y,
+        spriteId: definition.id,
+        rotation,
+        width: oriented.width,
+        height: oriented.height,
+        cells,
+      })
+    }
   }
   return candidates
 }
 
-function wouldCreateLooseSingle(candidate: Candidate, uncovered: ReadonlySet<string>) {
-  const remaining = new Set(uncovered)
-  candidate.keys.forEach((key) => remaining.delete(key))
-  return [...remaining].some((key) => {
-    const [x, y] = key.split(',').map(Number)
-    return !Object.values(DIRS).some((delta) => remaining.has(pointKey({ x: x + delta.x, y: y + delta.y })))
-  })
+function familyFor(placement: FurniturePlacement) {
+  return resolveFurnitureSprite(placement.spriteId).family
 }
 
-export function furnitureModuleCells(module: FurnitureModule) {
-  return moduleCells(module)
+export function furniturePlacementCells(placement: FurniturePlacement) {
+  return placement.cells.map((cell) => ({ ...cell }))
 }
 
-export function planFurnitureModules(piece: FurniturePiece): FurnitureModule[] {
+const placementCache = new WeakMap<FurniturePiece, Map<number, FurniturePlacement[]>>()
+
+export function planFurniturePlacements(piece: FurniturePiece, theme: number): FurniturePlacement[] {
   if (piece.kind === 'boundary' || piece.kind === 'pen') return []
+  const cached = placementCache.get(piece)?.get(theme)
+  if (cached) return cached
 
   const uncovered = new Set(piece.cells.map(pointKey))
-  const modules: FurnitureModule[] = []
-  let moduleIndex = 0
+  const placements: FurniturePlacement[] = []
+  const familyUses = new Map<FurnitureFamily, number>()
+  const spriteUses = new Map<string, number>()
 
   while (uncovered.size > 0) {
-    const triples = candidatesFor(uncovered, piece, 3)
-    const doubles = candidatesFor(uncovered, piece, 2)
-    const ranked = [...triples, ...doubles].sort((a, b) => {
-      const aLoose = wouldCreateLooseSingle(a, uncovered)
-      const bLoose = wouldCreateLooseSingle(b, uncovered)
-      if (aLoose !== bLoose) return Number(aLoose) - Number(bLoose)
-      if (a.score !== b.score) return b.score - a.score
-      if (a.y !== b.y) return a.y - b.y
-      if (a.x !== b.x) return a.x - b.x
-      return a.orientation.localeCompare(b.orientation)
-    })
-
-    const chosen = ranked[0]
-    if (chosen) {
-      const { keys, score: _score, ...module } = chosen
-      modules.push({ ...module, variant: piece.variant + moduleIndex++ })
-      keys.forEach((key) => uncovered.delete(key))
-      continue
-    }
-
-    const key = [...uncovered].sort((a, b) => {
+    const targetKey = [...uncovered].sort((a, b) => {
       const [ax, ay] = a.split(',').map(Number), [bx, by] = b.split(',').map(Number)
       return ay - by || ax - bx
     })[0]
-    const [x, y] = key.split(',').map(Number)
-    modules.push({ x, y, length: 1, orientation: 'horizontal', variant: piece.variant + moduleIndex++ })
-    uncovered.delete(key)
+    const [x, y] = targetKey.split(',').map(Number)
+    const candidates = candidatePlacements({ x, y }, uncovered)
+    candidates.sort((a, b) => {
+      const aDefinition = resolveFurnitureSprite(a.spriteId)
+      const bDefinition = resolveFurnitureSprite(b.spriteId)
+      if (a.cells.length !== b.cells.length) return b.cells.length - a.cells.length
+      const aTheme = Number(aDefinition.themes.includes(theme))
+      const bTheme = Number(bDefinition.themes.includes(theme))
+      if (aTheme !== bTheme) return bTheme - aTheme
+      const aFamilyUses = familyUses.get(aDefinition.family) ?? 0
+      const bFamilyUses = familyUses.get(bDefinition.family) ?? 0
+      if (aFamilyUses !== bFamilyUses) return aFamilyUses - bFamilyUses
+      const aSpriteUses = spriteUses.get(a.spriteId) ?? 0
+      const bSpriteUses = spriteUses.get(b.spriteId) ?? 0
+      if (aSpriteUses !== bSpriteUses) return aSpriteUses - bSpriteUses
+      const aHash = stableHash(`${piece.id}:${a.x}:${a.y}:${a.spriteId}:${a.rotation}`, piece.variant)
+      const bHash = stableHash(`${piece.id}:${b.x}:${b.y}:${b.spriteId}:${b.rotation}`, piece.variant)
+      return aHash - bHash
+    })
+
+    const chosen = candidates[0]
+    if (!chosen) throw new Error(`Furniture catalog cannot cover ${targetKey} in ${piece.id}`)
+    placements.push(chosen)
+    chosen.cells.forEach((cell) => uncovered.delete(pointKey(cell)))
+    const family = familyFor(chosen)
+    familyUses.set(family, (familyUses.get(family) ?? 0) + 1)
+    spriteUses.set(chosen.spriteId, (spriteUses.get(chosen.spriteId) ?? 0) + 1)
   }
 
-  return modules
+  const byTheme = placementCache.get(piece) ?? new Map<number, FurniturePlacement[]>()
+  byTheme.set(theme, placements)
+  placementCache.set(piece, byTheme)
+  return placements
 }

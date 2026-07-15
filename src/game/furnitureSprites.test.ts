@@ -1,33 +1,57 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { furnitureBlockSpriteCount, furnitureSpriteCount, resolveFurnitureBlock, resolveFurnitureSprite } from './furnitureSprites'
-import type { ObstacleCategory } from './types'
+import {
+  FURNITURE_ATLAS_SIZE,
+  FURNITURE_SPRITES,
+  PLACEABLE_FURNITURE_SPRITES,
+  furnitureSpriteCount,
+  resolveFurnitureSprite,
+} from './furnitureSprites'
 
-describe('furniture sprite manifest', () => {
-  it('keeps every category inside the production atlas', () => {
-    for (let category = 1; category <= 9; category += 1) {
-      const typedCategory = category as ObstacleCategory
-      expect(furnitureSpriteCount(typedCategory)).toBeGreaterThan(0)
-      for (let variant = 0; variant < furnitureSpriteCount(typedCategory); variant += 1) {
-        const { rect, referenceWidth, referenceHeight } = resolveFurnitureSprite(typedCategory, variant)
-        expect(rect[0]).toBeGreaterThanOrEqual(0)
-        expect(rect[1]).toBeGreaterThanOrEqual(0)
-        expect(rect[0] + rect[2]).toBeLessThanOrEqual(1536)
-        expect(rect[1] + rect[3]).toBeLessThanOrEqual(1024)
-        expect(referenceWidth).toBeGreaterThan(0)
-        expect(referenceHeight).toBeGreaterThan(0)
-      }
+function pngSize(bytes: Buffer) {
+  return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) }
+}
+
+describe('furniture sprite catalog', () => {
+  it('matches the production atlas and catalogs a broad obstacle set', () => {
+    const png = readFileSync(resolve(process.cwd(), 'public/assets/game/roombapac-furniture.png'))
+    expect(pngSize(png)).toEqual(FURNITURE_ATLAS_SIZE)
+    expect(furnitureSpriteCount()).toBe(FURNITURE_SPRITES.length)
+    expect(FURNITURE_SPRITES.length).toBeGreaterThanOrEqual(70)
+    expect(new Set(FURNITURE_SPRITES.map(({ family }) => family)).size).toBeGreaterThanOrEqual(12)
+  })
+
+  it('keeps every crop, footprint, and mask valid', () => {
+    const ids = new Set<string>()
+    for (const definition of FURNITURE_SPRITES) {
+      expect(ids.has(definition.id)).toBe(false)
+      ids.add(definition.id)
+      expect(resolveFurnitureSprite(definition.id)).toBe(definition)
+
+      const [x, y, width, height] = definition.rect
+      expect(x).toBeGreaterThanOrEqual(0)
+      expect(y).toBeGreaterThanOrEqual(0)
+      expect(x + width).toBeLessThanOrEqual(FURNITURE_ATLAS_SIZE.width)
+      expect(y + height).toBeLessThanOrEqual(FURNITURE_ATLAS_SIZE.height)
+
+      const [blocksWide, blocksHigh] = definition.footprint
+      expect(blocksWide).toBeGreaterThan(0)
+      expect(blocksHigh).toBeGreaterThan(0)
+      expect(definition.mask).toHaveLength(blocksHigh)
+      definition.mask.forEach((row) => expect(row).toMatch(new RegExp(`^[01]{${blocksWide}}$`)))
+      expect(definition.mask.join('')).toContain('1')
+      expect(definition.rotations.length).toBeGreaterThan(0)
+      definition.rotations.forEach((rotation) => expect([0, 1, 2, 3]).toContain(rotation))
     }
   })
 
-  it('provides exact one-, two-, and three-cell building blocks', () => {
-    for (const blocks of [1, 2, 3] as const) {
-      expect(furnitureBlockSpriteCount(blocks)).toBeGreaterThan(0)
-      for (let category = 1; category <= 9; category += 1) {
-        const sprite = resolveFurnitureBlock(category as ObstacleCategory, blocks, category)
-        expect(sprite.blocks).toBe(blocks)
-        expect(sprite.referenceWidth).toBe(blocks)
-        expect(sprite.referenceHeight).toBe(1)
-      }
-    }
+  it('provides varied one-cell fallbacks without relying on chairs', () => {
+    const oneCell = PLACEABLE_FURNITURE_SPRITES.filter(({ footprint, mask }) => (
+      footprint[0] === 1 && footprint[1] === 1 && mask[0] === '1'
+    ))
+    expect(oneCell.length).toBeGreaterThanOrEqual(20)
+    expect([...new Set(oneCell.map(({ family }) => family))]).toEqual(expect.arrayContaining(['chair', 'cabinet', 'table', 'appliance', 'plant', 'sofa']))
+    expect(oneCell.filter(({ family }) => family === 'chair').length / oneCell.length).toBeLessThan(0.5)
   })
 })
