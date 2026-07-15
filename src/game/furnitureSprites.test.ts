@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { furnitureSpriteCount, resolveFurnitureSprite } from './furnitureSprites'
+import { furnitureBlockSpriteCount, furnitureSpriteCount, resolveFurnitureBlock, resolveFurnitureSprite } from './furnitureSprites'
 import type { ObstacleCategory } from './types'
 
 describe('furniture sprite manifest', () => {
@@ -15,6 +15,18 @@ describe('furniture sprite manifest', () => {
         expect(rect[1] + rect[3]).toBeLessThanOrEqual(1024)
         expect(referenceWidth).toBeGreaterThan(0)
         expect(referenceHeight).toBeGreaterThan(0)
+      }
+    }
+  })
+
+  it('provides exact one-, two-, and three-cell building blocks', () => {
+    for (const blocks of [1, 2, 3] as const) {
+      expect(furnitureBlockSpriteCount(blocks)).toBeGreaterThan(0)
+      for (let category = 1; category <= 9; category += 1) {
+        const sprite = resolveFurnitureBlock(category as ObstacleCategory, blocks, category)
+        expect(sprite.blocks).toBe(blocks)
+        expect(sprite.referenceWidth).toBe(blocks)
+        expect(sprite.referenceHeight).toBe(1)
       }
     }
   })

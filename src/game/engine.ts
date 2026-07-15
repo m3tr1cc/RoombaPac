@@ -1,5 +1,6 @@
 import { availableDirections, createMaze, isWalkable, mulberry32, neighborPoint } from './maze'
-import { FURNITURE_ATLAS_URL, resolveFurnitureSprite } from './furnitureSprites'
+import { FURNITURE_ATLAS_URL, resolveFurnitureBlock, resolveFurnitureSprite } from './furnitureSprites'
+import { planFurnitureModules } from './furnitureLayout'
 import { PET_ATLAS_URL, resolvePetSprite, type PetSpriteFrame } from './petSprites'
 import { ROOMBA_ATLAS_URL, resolveRoombaSprite, type RoombaSpriteFrame } from './roombaSprites'
 import { calculateScore, frightenedDuration, petSpeed, roombaSpeed } from './scoring'
@@ -208,12 +209,6 @@ export class GameEngine {
   }
 
   private drawFurniture(ctx: CanvasRenderingContext2D, cell: number, ox: number, oy: number) {
-    for (let y = 0; y < this.maze.height; y += 1) for (let x = 0; x < this.maze.width; x += 1) {
-      if (this.maze.cells[y][x] !== 1) continue
-      ctx.fillStyle = (x + y + this.maze.theme) % 2 ? '#5d3b22' : '#68462a'
-      ctx.fillRect(ox + x * cell, oy + y * cell, cell + .5, cell + .5)
-    }
-
     for (const piece of this.maze.furniture) {
       this.drawFurniturePiece(ctx, piece, cell, ox, oy)
     }
@@ -233,31 +228,42 @@ export class GameEngine {
       }
       return
     }
-    const centerX = ox + (piece.x + piece.width / 2) * cell
-    const centerY = oy + (piece.y + piece.height / 2) * cell
-    const sprite = resolveFurnitureSprite(piece.category, piece.variant)
-    const rotation = (piece.rotation ?? 0) * Math.PI / 2
-    const turnsSideways = (piece.rotation ?? 0) % 2 === 1
-    const drawWidth = Math.max(cell, piece.width * cell)
-    const drawHeight = Math.max(cell, piece.height * cell)
-    ctx.save()
-    if (piece.category !== 8) {
-      ctx.beginPath()
-      for (const point of piece.cells) ctx.rect(ox + point.x * cell - .5, oy + point.y * cell - .5, cell + 1, cell + 1)
-      ctx.clip()
+    if (piece.kind === 'pen') {
+      const centerX = ox + (piece.x + piece.width / 2) * cell
+      const centerY = oy + (piece.y + piece.height / 2) * cell
+      const sprite = resolveFurnitureSprite(8, piece.variant)
+      ctx.drawImage(
+        this.furnitureAtlas,
+        sprite.rect[0], sprite.rect[1], sprite.rect[2], sprite.rect[3],
+        centerX - piece.width * cell / 2,
+        centerY - piece.height * cell / 2,
+        piece.width * cell,
+        piece.height * cell,
+      )
+      return
     }
-    ctx.translate(centerX, centerY)
-    ctx.scale(piece.flipX ? -1 : 1, 1)
-    ctx.rotate(rotation)
-    ctx.drawImage(
-      this.furnitureAtlas,
-      sprite.rect[0], sprite.rect[1], sprite.rect[2], sprite.rect[3],
-      -(turnsSideways ? drawHeight : drawWidth) / 2,
-      -(turnsSideways ? drawWidth : drawHeight) / 2,
-      turnsSideways ? drawHeight : drawWidth,
-      turnsSideways ? drawWidth : drawHeight,
-    )
-    ctx.restore()
+
+    for (const module of planFurnitureModules(piece)) {
+      const sprite = resolveFurnitureBlock(piece.category, module.length, module.variant)
+      const horizontal = module.orientation === 'horizontal'
+      const centerX = ox + (module.x + (horizontal ? module.length / 2 : .5)) * cell
+      const centerY = oy + (module.y + (horizontal ? .5 : module.length / 2)) * cell
+      const drawWidth = module.length * cell
+      const drawHeight = cell
+
+      ctx.save()
+      ctx.translate(centerX, centerY)
+      if (!horizontal) ctx.rotate(Math.PI / 2)
+      ctx.drawImage(
+        this.furnitureAtlas,
+        sprite.rect[0], sprite.rect[1], sprite.rect[2], sprite.rect[3],
+        -drawWidth / 2,
+        -drawHeight / 2,
+        drawWidth,
+        drawHeight,
+      )
+      ctx.restore()
+    }
   }
 
   private resetActors() {

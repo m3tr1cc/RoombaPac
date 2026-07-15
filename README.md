@@ -55,4 +55,4 @@ The procedural design is an independent TypeScript implementation inspired by th
 
 ## Art and audio
 
-The committed sprite atlases were created from the supplied visual references as cohesive, logo-free pixel-art production assets. The furniture atlas maps straight, corner, junction, stub, block, alcove, room, cage, and outer-wall categories to collision-accurate maze components. Runtime blue tinting creates frightened pet states. All music and effects are synthesized in the browser and do not copy Pac-Man media.
+The committed sprite atlases were created from the supplied visual references as cohesive, logo-free pixel-art production assets. Interior obstacles are assembled from exact one-, two-, and three-cell furniture modules, so sofas, chairs, shelving, corners, and junctions stay centered without stretching or cropping. Transparent sprite space reveals the current world floor tile. Runtime blue tinting creates frightened pet states. All music and effects are synthesized in the browser and do not copy Pac-Man media.

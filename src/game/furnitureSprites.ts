@@ -9,6 +9,8 @@ export type FurnitureSprite = {
   referenceHeight: number
 }
 
+export type FurnitureBlockSprite = FurnitureSprite & { blocks: 1 | 2 | 3 }
+
 const sprites = {
   1: [
     { rect: [37, 154, 113, 48], referenceWidth: 3, referenceHeight: 1 },
@@ -68,4 +70,38 @@ export function resolveFurnitureSprite(category: ObstacleCategory, variant: numb
 
 export function furnitureSpriteCount(category: ObstacleCategory) {
   return sprites[category].length
+}
+
+const oneBlockSprites: FurnitureBlockSprite[] = [
+  { rect: [964, 367, 45, 54], referenceWidth: 1, referenceHeight: 1, blocks: 1 },
+  { rect: [1025, 369, 42, 52], referenceWidth: 1, referenceHeight: 1, blocks: 1 },
+  { rect: [1085, 369, 43, 53], referenceWidth: 1, referenceHeight: 1, blocks: 1 },
+  { rect: [1200, 369, 43, 54], referenceWidth: 1, referenceHeight: 1, blocks: 1 },
+  { rect: [1256, 370, 41, 54], referenceWidth: 1, referenceHeight: 1, blocks: 1 },
+]
+
+const twoBlockSprites: FurnitureBlockSprite[] = [
+  { rect: [771, 372, 64, 50], referenceWidth: 2, referenceHeight: 1, blocks: 2 },
+  { rect: [769, 434, 68, 52], referenceWidth: 2, referenceHeight: 1, blocks: 2 },
+  { rect: [769, 498, 68, 49], referenceWidth: 2, referenceHeight: 1, blocks: 2 },
+]
+
+const threeBlockSprites: FurnitureBlockSprite[] = [
+  { rect: [32, 152, 122, 54], referenceWidth: 3, referenceHeight: 1, blocks: 3 },
+  { rect: [168, 152, 119, 54], referenceWidth: 3, referenceHeight: 1, blocks: 3 },
+  { rect: [297, 152, 92, 54], referenceWidth: 3, referenceHeight: 1, blocks: 3 },
+  { rect: [401, 152, 106, 54], referenceWidth: 3, referenceHeight: 1, blocks: 3 },
+]
+
+const categoryOffsets: Record<ObstacleCategory, number> = {
+  1: 0, 2: 1, 3: 0, 4: 2, 5: 3, 6: 1, 7: 0, 8: 2, 9: 0,
+}
+
+export function resolveFurnitureBlock(category: ObstacleCategory, blocks: 1 | 2 | 3, variant: number) {
+  const choices = blocks === 1 ? oneBlockSprites : blocks === 2 ? twoBlockSprites : threeBlockSprites
+  return choices[(variant + categoryOffsets[category]) % choices.length]
+}
+
+export function furnitureBlockSpriteCount(blocks: 1 | 2 | 3) {
+  return blocks === 1 ? oneBlockSprites.length : blocks === 2 ? twoBlockSprites.length : threeBlockSprites.length
 }
