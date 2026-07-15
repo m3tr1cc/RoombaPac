@@ -1,5 +1,6 @@
 import { availableDirections, createMaze, isWalkable, mulberry32 } from './maze'
 import { PET_ATLAS_URL, resolvePetSprite, type AtlasRect, type PetSpriteFrame } from './petSprites'
+import { ROOMBA_ATLAS_URL, resolveRoombaSprite, type RoombaSpriteFrame } from './roombaSprites'
 import { calculateScore, frightenedDuration, petSpeed, roombaSpeed } from './scoring'
 import { DIRS, OPPOSITE, pointKey, type Actor, type Direction, type FurnitureKind, type FurniturePiece, type GameMode, type GameSnapshot, type Maze, type Pet, type Point } from './types'
 
@@ -10,9 +11,6 @@ const FLOOR_RECTS = [
   [24, 1095, 116, 115], [165, 1095, 116, 115], [306, 1095, 116, 115], [445, 1095, 116, 115],
   [579, 1095, 110, 115], [710, 1095, 115, 115], [841, 1095, 105, 115], [966, 1095, 109, 115], [1091, 1095, 129, 115],
 ] as const
-const ROOMBA_FRAMES: readonly AtlasRect[] = [
-  [25, 25, 88, 92], [130, 25, 88, 92], [235, 25, 88, 92], [340, 25, 88, 92],
-]
 const FURNITURE_RECTS: Record<FurnitureKind, AtlasRect> = {
   i: [20, 815, 150, 87], l: [210, 817, 116, 90], t: [499, 816, 111, 91], pen: [970, 811, 250, 258],
 }
@@ -44,14 +42,17 @@ export class GameEngine {
   private lastBump = 0
   private nextPetRelease = 0
   private nextPetReleaseAt = 0
+  private reducedMotion = false
   private atlas = new Image()
   private petAtlas = new Image()
+  private roombaAtlas = new Image()
   private options: EngineOptions
 
   constructor(options: EngineOptions) {
     this.options = options
     this.atlas.src = '/assets/game/roombapac-atlas.png'
     this.petAtlas.src = PET_ATLAS_URL
+    this.roombaAtlas.src = ROOMBA_ATLAS_URL
     this.resetActors()
   }
 
@@ -81,6 +82,10 @@ export class GameEngine {
 
   setDirection(direction: Direction) {
     if (this.mode === 'playing') this.roomba.nextDirection = direction
+  }
+
+  setReducedMotion(reducedMotion: boolean) {
+    this.reducedMotion = reducedMotion
   }
 
   togglePause() {
@@ -161,11 +166,10 @@ export class GameEngine {
       ctx.restore()
     }
     const rp = actorPoint(this.roomba)
-    const jiggle = this.mode === 'playing' ? Math.sin(now / 70) * cell * .035 : 0
-    const roombaFrame = Math.floor(now / 105) % ROOMBA_FRAMES.length
-    const roombaRotation: Record<Direction, number> = { up: 0, right: Math.PI / 2, down: Math.PI, left: -Math.PI / 2 }
-    if (this.atlas.complete && this.atlas.naturalWidth) {
-      this.drawAtlasSprite(ctx, ROOMBA_FRAMES[roombaFrame], ox + (rp.x + .5) * cell, oy + (rp.y + .5) * cell + jiggle, cell * 1.34, false, roombaRotation[this.roomba.direction])
+    const jiggle = this.mode === 'playing' && !this.reducedMotion ? Math.sin(now / 70) * cell * .035 : 0
+    const roombaFrame = this.reducedMotion ? 0 : Math.floor(now / 105)
+    if (this.roombaAtlas.complete && this.roombaAtlas.naturalWidth) {
+      this.drawRoombaSprite(ctx, resolveRoombaSprite(this.roomba.direction, roombaFrame), ox + (rp.x + .5) * cell, oy + (rp.y + .5) * cell + jiggle, cell * 1.34)
     }
     else { ctx.fillStyle = '#f4eee4'; ctx.beginPath(); ctx.arc(ox + (rp.x + .5) * cell, oy + (rp.y + .5) * cell, cell * .47, 0, Math.PI * 2); ctx.fill(); ctx.strokeStyle = '#4b4640'; ctx.stroke() }
     if (now < this.graceUntil && Math.floor(now / 100) % 2) {
@@ -177,13 +181,16 @@ export class GameEngine {
     ctx.drawImage(this.atlas, rect[0], rect[1], rect[2], rect[3], x - size / 2, y - size / 2, size, size)
   }
 
-  private drawAtlasSprite(ctx: CanvasRenderingContext2D, rect: AtlasRect, x: number, y: number, height: number, flipX = false, rotation = 0) {
-    const width = height * rect[2] / rect[3]
+  private drawRoombaSprite(ctx: CanvasRenderingContext2D, frame: RoombaSpriteFrame, x: number, y: number, height: number) {
+    const scale = height / frame.referenceHeight
     ctx.save()
     ctx.translate(x, y)
-    ctx.rotate(rotation)
-    ctx.scale(flipX ? -1 : 1, 1)
-    ctx.drawImage(this.atlas, rect[0], rect[1], rect[2], rect[3], -width / 2, -height / 2, width, height)
+    ctx.drawImage(
+      this.roombaAtlas,
+      frame.rect[0], frame.rect[1], frame.rect[2], frame.rect[3],
+      -frame.anchor[0] * scale, -frame.anchor[1] * scale,
+      frame.rect[2] * scale, frame.rect[3] * scale,
+    )
     ctx.restore()
   }
 

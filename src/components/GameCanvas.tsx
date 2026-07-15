@@ -41,8 +41,15 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(function
     const canvas = canvasRef.current
     const engine = engineRef.current
     if (!canvas || !engine) return
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const syncReducedMotion = () => engine.setReducedMotion(reducedMotion.matches)
+    reducedMotion.addEventListener('change', syncReducedMotion)
+    syncReducedMotion()
     const context = canvas.getContext('2d')
-    if (!context) return
+    if (!context) {
+      reducedMotion.removeEventListener('change', syncReducedMotion)
+      return
+    }
     const resize = () => {
       const rect = canvas.getBoundingClientRect()
       const ratio = Math.min(2, window.devicePixelRatio || 1)
@@ -62,7 +69,11 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(function
       frame = requestAnimationFrame(tick)
     }
     frame = requestAnimationFrame(tick)
-    return () => { cancelAnimationFrame(frame); observer.disconnect() }
+    return () => {
+      cancelAnimationFrame(frame)
+      observer.disconnect()
+      reducedMotion.removeEventListener('change', syncReducedMotion)
+    }
   }, [])
 
   useEffect(() => {
