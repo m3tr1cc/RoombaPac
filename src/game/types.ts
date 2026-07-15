@@ -2,14 +2,21 @@ export type Direction = 'up' | 'right' | 'down' | 'left'
 export type Cell = 0 | 1
 export type Point = { x: number; y: number }
 export type QuarterTurn = 0 | 1 | 2 | 3
-export type FurnitureKind = 'i' | 'l' | 't' | 'pen'
+export type ObstacleCategory = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+export type FurnitureKind = 'straight' | 'corner' | 'junction' | 'stub' | 'block' | 'alcove' | 'room' | 'pen' | 'boundary'
 export type FurniturePiece = Point & {
+  id: string
   width: number
   height: number
   kind: FurnitureKind
+  category: ObstacleCategory
+  cells: Point[]
+  variant: number
   rotation?: QuarterTurn
   flipX?: boolean
 }
+
+export type TunnelPair = { left: Point; right: Point }
 
 export type Maze = {
   width: number
@@ -20,6 +27,7 @@ export type Maze = {
   spawn: Point
   pen: Point
   furniture: FurniturePiece[]
+  tunnels: TunnelPair[]
   theme: number
   seed: number
 }

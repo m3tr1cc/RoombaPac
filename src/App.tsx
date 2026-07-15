@@ -32,7 +32,9 @@ function App() {
 
   const start = async () => {
     setShowName(false); setSubmitError('')
-    await audio.start()
+    // Audio activation is kicked off by the user gesture but must not block the
+    // run if a browser keeps its AudioContext suspended (common in embeds).
+    void audio.start()
     const nextTicket = await startRankedRun()
     setTicket(nextTicket)
     gameRef.current?.start(nextTicket.seed)
