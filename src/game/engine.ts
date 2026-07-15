@@ -1,4 +1,5 @@
 import { availableDirections, createMaze, isWalkable, mulberry32 } from './maze'
+import { PET_ATLAS_URL, resolvePetSprite, type AtlasRect, type PetSpriteFrame } from './petSprites'
 import { calculateScore, frightenedDuration, petSpeed, roombaSpeed } from './scoring'
 import { DIRS, OPPOSITE, pointKey, type Actor, type Direction, type FurnitureKind, type FurniturePiece, type GameMode, type GameSnapshot, type Maze, type Pet, type Point } from './types'
 
@@ -9,33 +10,8 @@ const FLOOR_RECTS = [
   [24, 1095, 116, 115], [165, 1095, 116, 115], [306, 1095, 116, 115], [445, 1095, 116, 115],
   [579, 1095, 110, 115], [710, 1095, 115, 115], [841, 1095, 105, 115], [966, 1095, 109, 115], [1091, 1095, 129, 115],
 ] as const
-type AtlasRect = readonly [number, number, number, number]
-type DirectionFrames = Record<Direction, readonly [AtlasRect, AtlasRect]>
-
 const ROOMBA_FRAMES: readonly AtlasRect[] = [
   [25, 25, 88, 92], [130, 25, 88, 92], [235, 25, 88, 92], [340, 25, 88, 92],
-]
-const PET_FRAMES: readonly DirectionFrames[] = [
-  {
-    down: [[479, 31, 78, 101], [678, 143, 82, 101]], up: [[479, 143, 78, 101], [479, 250, 78, 101]],
-    right: [[579, 31, 84, 101], [678, 31, 84, 101]], left: [[579, 31, 84, 101], [678, 31, 84, 101]],
-  },
-  {
-    down: [[804, 28, 81, 105], [1110, 142, 82, 105]], up: [[804, 142, 81, 105], [804, 252, 81, 105]],
-    right: [[1005, 28, 88, 105], [1110, 28, 88, 105]], left: [[1005, 28, 88, 105], [1110, 28, 88, 105]],
-  },
-  {
-    down: [[31, 368, 82, 104], [331, 368, 82, 104]], up: [[31, 484, 82, 104], [331, 484, 82, 104]],
-    right: [[132, 368, 82, 104], [233, 368, 82, 104]], left: [[132, 368, 82, 104], [233, 368, 82, 104]],
-  },
-  {
-    down: [[481, 370, 83, 104], [678, 486, 83, 94]], up: [[481, 486, 83, 94], [481, 486, 83, 94]],
-    right: [[580, 370, 83, 104], [678, 370, 83, 104]], left: [[580, 370, 83, 104], [678, 370, 83, 104]],
-  },
-  {
-    down: [[817, 369, 88, 104], [1118, 369, 88, 104]], up: [[817, 484, 88, 104], [1118, 484, 88, 104]],
-    right: [[917, 369, 88, 104], [1018, 369, 88, 104]], left: [[917, 369, 88, 104], [1018, 369, 88, 104]],
-  },
 ]
 const FURNITURE_RECTS: Record<FurnitureKind, AtlasRect> = {
   i: [20, 815, 150, 87], l: [210, 817, 116, 90], t: [499, 816, 111, 91], pen: [970, 811, 250, 258],
@@ -69,11 +45,13 @@ export class GameEngine {
   private nextPetRelease = 0
   private nextPetReleaseAt = 0
   private atlas = new Image()
+  private petAtlas = new Image()
   private options: EngineOptions
 
   constructor(options: EngineOptions) {
     this.options = options
     this.atlas.src = '/assets/game/roombapac-atlas.png'
+    this.petAtlas.src = PET_ATLAS_URL
     this.resetActors()
   }
 
@@ -175,8 +153,9 @@ export class GameEngine {
       const runningBob = Math.sin(now / 58 + pet.id) * cell * .055
       ctx.save()
       if (frightened) ctx.filter = `hue-rotate(165deg) saturate(1.8) brightness(${this.frightenedUntil - now < 1500 && Math.floor(now / 150) % 2 ? 1.8 : .85})`
-      if (this.atlas.complete && this.atlas.naturalWidth) {
-        this.drawAtlasSprite(ctx, PET_FRAMES[pet.id][pet.direction][frame], ox + (point.x + .5) * cell, oy + (point.y + .5) * cell + runningBob, cell * 1.42, pet.direction === 'left')
+      if (this.petAtlas.complete && this.petAtlas.naturalWidth) {
+        const sprite = resolvePetSprite(pet.id, pet.direction, frame)
+        this.drawPetSprite(ctx, sprite.frame, ox + (point.x + .5) * cell, oy + (point.y + .5) * cell + runningBob, cell, sprite.flipX)
       }
       else { ctx.fillStyle = frightened ? '#3274d9' : PET_COLORS[pet.id]; ctx.beginPath(); ctx.arc(ox + (point.x + .5) * cell, oy + (point.y + .5) * cell, cell * .42, 0, Math.PI * 2); ctx.fill() }
       ctx.restore()
@@ -205,6 +184,20 @@ export class GameEngine {
     ctx.rotate(rotation)
     ctx.scale(flipX ? -1 : 1, 1)
     ctx.drawImage(this.atlas, rect[0], rect[1], rect[2], rect[3], -width / 2, -height / 2, width, height)
+    ctx.restore()
+  }
+
+  private drawPetSprite(ctx: CanvasRenderingContext2D, frame: PetSpriteFrame, x: number, y: number, cell: number, flipX: boolean) {
+    const scale = cell * 1.42 / frame.referenceHeight
+    ctx.save()
+    ctx.translate(x, y)
+    ctx.scale(flipX ? -1 : 1, 1)
+    ctx.drawImage(
+      this.petAtlas,
+      frame.rect[0], frame.rect[1], frame.rect[2], frame.rect[3],
+      -frame.anchor[0] * scale, -frame.anchor[1] * scale,
+      frame.rect[2] * scale, frame.rect[3] * scale,
+    )
     ctx.restore()
   }
 
