@@ -1,8 +1,10 @@
-import { availableDirections, createMaze, isWalkable, mulberry32 } from './maze'
-import { PET_ATLAS_URL, resolvePetSprite, type AtlasRect, type PetSpriteFrame } from './petSprites'
+import { availableDirections, createMaze, isWalkable, mulberry32, neighborPoint } from './maze'
+import { FURNITURE_ATLAS_URL, resolveFurnitureBlock, resolveFurnitureSprite } from './furnitureSprites'
+import { planFurnitureModules } from './furnitureLayout'
+import { PET_ATLAS_URL, resolvePetSprite, type PetSpriteFrame } from './petSprites'
 import { ROOMBA_ATLAS_URL, resolveRoombaSprite, type RoombaSpriteFrame } from './roombaSprites'
 import { calculateScore, frightenedDuration, petSpeed, roombaSpeed } from './scoring'
-import { DIRS, OPPOSITE, pointKey, type Actor, type Direction, type FurnitureKind, type FurniturePiece, type GameMode, type GameSnapshot, type Maze, type Pet, type Point } from './types'
+import { DIRS, OPPOSITE, pointKey, type Actor, type Direction, type FurniturePiece, type GameMode, type GameSnapshot, type Maze, type Pet, type Point } from './types'
 
 type EngineOptions = { onSnapshot: (snapshot: GameSnapshot) => void; onSound: (sound: 'dot' | 'item' | 'pet' | 'bump' | 'hit' | 'clear' | 'reset' | 'turn') => void }
 
@@ -11,10 +13,6 @@ const FLOOR_RECTS = [
   [24, 1095, 116, 115], [165, 1095, 116, 115], [306, 1095, 116, 115], [445, 1095, 116, 115],
   [579, 1095, 110, 115], [710, 1095, 115, 115], [841, 1095, 105, 115], [966, 1095, 109, 115], [1091, 1095, 129, 115],
 ] as const
-const FURNITURE_RECTS: Record<FurnitureKind, AtlasRect> = {
-  i: [20, 815, 150, 87], l: [210, 817, 116, 90], t: [499, 816, 111, 91], pen: [970, 811, 250, 258],
-}
-const BORDER_RECT: AtlasRect = [20, 815, 150, 87]
 const ITEM_RECTS = Array.from({ length: 16 }, (_, index) => [28 + index * 75, 621, 58, 64] as const)
 
 function actorPoint(actor: Actor): Point {
@@ -44,6 +42,7 @@ export class GameEngine {
   private nextPetReleaseAt = 0
   private reducedMotion = false
   private atlas = new Image()
+  private furnitureAtlas = new Image()
   private petAtlas = new Image()
   private roombaAtlas = new Image()
   private options: EngineOptions
@@ -51,6 +50,7 @@ export class GameEngine {
   constructor(options: EngineOptions) {
     this.options = options
     this.atlas.src = '/assets/game/roombapac-atlas.png'
+    this.furnitureAtlas.src = FURNITURE_ATLAS_URL
     this.petAtlas.src = PET_ATLAS_URL
     this.roombaAtlas.src = ROOMBA_ATLAS_URL
     this.resetActors()
@@ -208,58 +208,62 @@ export class GameEngine {
     ctx.restore()
   }
 
-  private drawAtlasBox(ctx: CanvasRenderingContext2D, rect: AtlasRect, x: number, y: number, width: number, height: number, flipX = false, rotation = 0) {
-    ctx.save()
-    ctx.translate(x, y)
-    ctx.rotate(rotation)
-    ctx.scale(flipX ? -1 : 1, 1)
-    ctx.drawImage(this.atlas, rect[0], rect[1], rect[2], rect[3], -width / 2, -height / 2, width, height)
-    ctx.restore()
-  }
-
   private drawFurniture(ctx: CanvasRenderingContext2D, cell: number, ox: number, oy: number) {
-    if (!(this.atlas.complete && this.atlas.naturalWidth)) {
-      for (let y = 0; y < this.maze.height; y += 1) for (let x = 0; x < this.maze.width; x += 1) {
-        if (this.maze.cells[y][x] !== 1) continue
-        ctx.fillStyle = (x + y) % 2 ? '#775033' : '#604126'
-        ctx.fillRect(ox + x * cell, oy + y * cell, cell, cell)
-      }
-      return
-    }
-
-    for (let x = 0; x < this.maze.width; x += 3) {
-      const span = Math.min(3, this.maze.width - x)
-      const centerX = ox + (x + span / 2) * cell
-      this.drawAtlasBox(ctx, BORDER_RECT, centerX, oy + cell / 2, span * cell, cell)
-      this.drawAtlasBox(ctx, BORDER_RECT, centerX, oy + (this.maze.height - .5) * cell, span * cell, cell, false, Math.PI)
-    }
-    for (let y = 1; y < this.maze.height - 1; y += 3) {
-      const span = Math.min(3, this.maze.height - 1 - y)
-      const centerY = oy + (y + span / 2) * cell
-      this.drawAtlasBox(ctx, BORDER_RECT, ox + cell / 2, centerY, span * cell, cell, false, Math.PI / 2)
-      this.drawAtlasBox(ctx, BORDER_RECT, ox + (this.maze.width - .5) * cell, centerY, span * cell, cell, false, -Math.PI / 2)
-    }
     for (const piece of this.maze.furniture) {
       this.drawFurniturePiece(ctx, piece, cell, ox, oy)
     }
   }
 
   private drawFurniturePiece(ctx: CanvasRenderingContext2D, piece: FurniturePiece, cell: number, ox: number, oy: number) {
-    const centerX = ox + (piece.x + piece.width / 2) * cell
-    const centerY = oy + (piece.y + piece.height / 2) * cell
-    if (piece.kind === 'pen') {
-      this.drawAtlasBox(ctx, FURNITURE_RECTS.pen, centerX, centerY, piece.width * cell, piece.height * cell)
+    if (!(this.furnitureAtlas.complete && this.furnitureAtlas.naturalWidth)) return
+    if (piece.kind === 'boundary') {
+      const sprite = resolveFurnitureSprite(9, piece.variant)
+      for (const point of piece.cells) {
+        const vertical = point.x === 0 || point.x === this.maze.width - 1
+        ctx.save()
+        ctx.translate(ox + (point.x + .5) * cell, oy + (point.y + .5) * cell)
+        if (vertical) ctx.rotate(Math.PI / 2)
+        ctx.drawImage(this.furnitureAtlas, sprite.rect[0], sprite.rect[1], sprite.rect[2], sprite.rect[3], -cell * .55, -cell * .5, cell * 1.1, cell)
+        ctx.restore()
+      }
       return
     }
-    const baseWidth = piece.kind === 'i' ? 5 : 3
-    const baseHeight = piece.kind === 'i' ? 1 : 3
-    const rect = FURNITURE_RECTS[piece.kind]
-    ctx.save()
-    ctx.translate(centerX, centerY)
-    ctx.scale(piece.flipX ? -1 : 1, 1)
-    ctx.rotate((piece.rotation ?? 0) * Math.PI / 2)
-    ctx.drawImage(this.atlas, rect[0], rect[1], rect[2], rect[3], -baseWidth * cell / 2, -baseHeight * cell / 2, baseWidth * cell, baseHeight * cell)
-    ctx.restore()
+    if (piece.kind === 'pen') {
+      const centerX = ox + (piece.x + piece.width / 2) * cell
+      const centerY = oy + (piece.y + piece.height / 2) * cell
+      const sprite = resolveFurnitureSprite(8, piece.variant)
+      ctx.drawImage(
+        this.furnitureAtlas,
+        sprite.rect[0], sprite.rect[1], sprite.rect[2], sprite.rect[3],
+        centerX - piece.width * cell / 2,
+        centerY - piece.height * cell / 2,
+        piece.width * cell,
+        piece.height * cell,
+      )
+      return
+    }
+
+    for (const module of planFurnitureModules(piece)) {
+      const sprite = resolveFurnitureBlock(piece.category, module.length, module.variant)
+      const horizontal = module.orientation === 'horizontal'
+      const centerX = ox + (module.x + (horizontal ? module.length / 2 : .5)) * cell
+      const centerY = oy + (module.y + (horizontal ? .5 : module.length / 2)) * cell
+      const drawWidth = module.length * cell
+      const drawHeight = cell
+
+      ctx.save()
+      ctx.translate(centerX, centerY)
+      if (!horizontal) ctx.rotate(Math.PI / 2)
+      ctx.drawImage(
+        this.furnitureAtlas,
+        sprite.rect[0], sprite.rect[1], sprite.rect[2], sprite.rect[3],
+        -drawWidth / 2,
+        -drawHeight / 2,
+        drawWidth,
+        drawHeight,
+      )
+      ctx.restore()
+    }
   }
 
   private resetActors() {
@@ -271,18 +275,24 @@ export class GameEngine {
 
   private moveRoomba(dt: number, now: number) {
     this.advance(this.roomba, roombaSpeed(this.level) * dt, () => {
-      const queued = DIRS[this.roomba.nextDirection]
-      if (isWalkable(this.maze, { x: this.roomba.x + queued.x, y: this.roomba.y + queued.y })) {
+      const queued = neighborPoint(this.maze, this.roomba, this.roomba.nextDirection)
+      if (queued && this.isRoombaWalkable(queued)) {
         if (this.roomba.direction !== this.roomba.nextDirection) this.options.onSound('turn')
         this.roomba.direction = this.roomba.nextDirection
       }
-      const delta = DIRS[this.roomba.direction]
-      if (!isWalkable(this.maze, { x: this.roomba.x + delta.x, y: this.roomba.y + delta.y })) {
+      const next = neighborPoint(this.maze, this.roomba, this.roomba.direction)
+      if (!next || !this.isRoombaWalkable(next)) {
         if (now - this.lastBump > 240) { this.options.onSound('bump'); this.lastBump = now }
         return false
       }
       return true
     })
+  }
+
+  private isRoombaWalkable(point: Point) {
+    if (!isWalkable(this.maze, point)) return false
+    const cage = this.maze.furniture.find((piece) => piece.kind === 'pen')
+    return !cage || !(point.x > cage.x && point.x < cage.x + cage.width - 1 && point.y > cage.y && point.y < cage.y + cage.height - 1)
   }
 
   private movePets(dt: number, now: number) {
@@ -318,8 +328,8 @@ export class GameEngine {
   }
 
   private distanceAfter(pet: Pet, direction: Direction, target: Point) {
-    const d = DIRS[direction]
-    return Math.abs(pet.x + d.x - target.x) + Math.abs(pet.y + d.y - target.y)
+    const next = neighborPoint(this.maze, pet, direction) ?? pet
+    return Math.abs(next.x - target.x) + Math.abs(next.y - target.y)
   }
 
   private advance(actor: Actor, distance: number, canLeave: () => boolean) {
@@ -329,8 +339,9 @@ export class GameEngine {
       const chunk = Math.min(1 - actor.progress, remaining)
       actor.progress += chunk; remaining -= chunk
       if (actor.progress >= .999999) {
-        const delta = DIRS[actor.direction]
-        actor.x += delta.x; actor.y += delta.y; actor.progress = 0
+        const next = neighborPoint(this.maze, actor, actor.direction)
+        if (!next) return
+        actor.x = next.x; actor.y = next.y; actor.progress = 0
       }
     }
   }

@@ -47,6 +47,12 @@ Vercel Functions issue short-lived ranked-run seeds, validate completed run tota
 
 Vercel is connected directly to `m3tr1cc/RoombaPac`. Pull requests receive preview deployments, and merges to `main` deploy to production. The production URL can be submitted to Codefair as a sandboxed landscape project.
 
+## Maze generation
+
+Level one uses the supplied annotated landscape plan as a fixed furniture-obstacle blueprint. Later rooms are deterministic from the ranked run seed and level: a constrained half-board generator builds connected, single-lane loops around a reserved pet cage, mirrors the result, and adds matched wrap tunnels before placing crumbs and items.
+
+The procedural design is an independent TypeScript implementation inspired by the maze-design principles documented in [Alex313031/web-pacman](https://github.com/Alex313031/web-pacman). No source from its GPL-3.0 `mapgen.js` implementation is included in RoombaPac.
+
 ## Art and audio
 
-The committed sprite atlas was created from the supplied visual references as a cohesive, logo-free pixel-art production asset. Runtime blue tinting creates frightened pet states. All music and effects are synthesized in the browser and do not copy Pac-Man media.
+The committed sprite atlases were created from the supplied visual references as cohesive, logo-free pixel-art production assets. Interior obstacles are assembled from exact one-, two-, and three-cell furniture modules, so sofas, chairs, shelving, corners, and junctions stay centered without stretching or cropping. Transparent sprite space reveals the current world floor tile. Runtime blue tinting creates frightened pet states. All music and effects are synthesized in the browser and do not copy Pac-Man media.
