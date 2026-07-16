@@ -64,5 +64,6 @@ describe('footprint-aware furniture layout', () => {
     expect(new Set(firstMap.map(({ id }) => id)).size).toBeGreaterThanOrEqual(8)
     expect(new Set(firstMap.map(({ family }) => family)).size).toBeGreaterThanOrEqual(4)
     expect(definitions.filter(({ family }) => family === 'chair').length / definitions.length).toBeLessThan(0.3)
+    expect(selected.filter(({ cells }) => cells.length === 1).length / selected.length).toBeLessThan(0.15)
   })
 })

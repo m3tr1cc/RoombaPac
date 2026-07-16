@@ -49,7 +49,7 @@ Vercel is connected directly to `m3tr1cc/RoombaPac`. Pull requests receive previ
 
 ## Maze generation
 
-Level one uses the supplied annotated landscape plan as a fixed, compact 27×15 furniture-obstacle blueprint. Later rooms use the same dimensions and are deterministic from the ranked run seed and level: a constrained half-board generator builds connected, single-lane loops around a reserved pet cage, mirrors the result, and adds matched wrap tunnels before placing crumbs and items. Versioned run sessions keep older 31×17 runs valid while they remain active.
+Level one uses the supplied annotated landscape plan as a fixed, compact 27×15 furniture-obstacle blueprint. Later rooms use the same dimensions and are deterministic from the ranked run seed and level: an obstacle-first generator places a rounded quota of large rectangles, I pieces, T junctions, hybrids, corners, and blocks; mirrors the layout around the pet cage; rotates eligible shapes from the seed; and adds matched wrap tunnels before placing crumbs and items. Every floor stays connected and free of normal-path dead ends. Versioned run sessions keep older 31×17 runs valid while they remain active.
 
 The procedural design is an independent TypeScript implementation inspired by the maze-design principles documented in [Alex313031/web-pacman](https://github.com/Alex313031/web-pacman). No source from its GPL-3.0 `mapgen.js` implementation is included in RoombaPac.
 

@@ -7,8 +7,9 @@
 
 **Full-view comparison evidence**
 
-- The revised implementation preserves the landscape composition, symmetry, single-lane loop network, central cage, obstacle islands, outer boundary, and side tunnels.
-- The active world now uses 27×15 cells and 210 level-one crumbs, down from 31×17 cells and 277 crumbs. The board remains nearly flush with the 16:9 frame while actors, collectibles, and furniture render about 15% larger.
+- The revised implementation preserves the landscape composition, symmetry, connected no-dead-end routes, central cage, obstacle islands, outer boundary, and side tunnels.
+- The active world now uses 27×15 cells and 174 level-one crumbs, down from 31×17 cells and 277 crumbs. The board remains nearly flush with the 16:9 frame while actors, collectibles, and furniture render about 15% larger.
+- Fixed and procedural rooms use 18 quota-controlled obstacles: three large rectangles, five I pieces, four T pieces, two hybrids, two corners, and two blocks. Exact atlas masks reduce one-cell furniture placements from 70.3% to 11.1%.
 - Unlike the feedback capture, each collision component is assembled from exact one-, two-, and three-cell furniture modules. Sofas and bookcases remain proportionate instead of being stretched across arbitrary component bounds.
 - The brown collision-cell underlay has been removed. Transparent sprite space now reveals the same world floor tile used in the hallways.
 
@@ -42,8 +43,11 @@
    - Fix: removed the collision-cell fill so the normal themed world tile is the only floor beneath furniture.
    - Post-fix evidence: both revised screenshots show continuous floor tiles through every transparent furniture gap.
 5. P1 — The 31×17 rooms contained roughly 285 crumbs and took too long to clear.
-   - Fix: reduced fixed and procedural rooms to 27×15 cells, with deterministic generation constrained to 200–225 crumbs.
+   - Fix: reduced fixed and procedural rooms to 27×15 cells, then introduced deterministic obstacle quotas that settle rooms at 174 crumbs.
    - Post-fix evidence: the refreshed desktop and mobile landscape captures show the denser Pac-Man-like composition, larger game art, working HUD controls, and exposed touch pad.
+6. P1 — The compact corridor-first generator fragmented walls into roughly 46 obstacles, 72.8% of which were isolated blocks.
+   - Fix: replaced compact generation with a mirrored obstacle-first quota and exact multi-cell atlas masks; only two of 18 pieces are now one-block obstacles.
+   - Post-fix evidence: the refreshed captures show coherent rooms, sofas, T junctions, hybrids, and corners without the previous field of chairs.
 
 **Findings**
 
@@ -59,7 +63,7 @@
 - [x] Represent furniture categories 1–9 with production sprites.
 - [x] Tile every non-boundary collision cell exactly once with a centered furniture module.
 - [x] Preserve the themed world floor beneath transparent furniture.
-- [x] Preserve single-lane connectivity and real wrap tunnels.
+- [x] Preserve connected, no-dead-end routes and real wrap tunnels.
 - [x] Verify active desktop play and mobile touch controls.
 - [x] Verify the compact board fills the 16:9 surface without clipping at desktop and mobile landscape sizes.
 - [x] Check console warnings and errors at desktop and mobile viewports.
