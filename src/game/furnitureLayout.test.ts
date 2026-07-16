@@ -44,7 +44,15 @@ describe('footprint-aware furniture layout', () => {
     for (const obstacle of maze.furniture.filter(({ kind }) => kind !== 'boundary' && kind !== 'pen')) {
       const first = planFurniturePlacements(obstacle, maze.theme)
       expect(planFurniturePlacements(obstacle, maze.theme)).toEqual(first)
-      first.forEach(({ spriteId }) => expect(resolveFurnitureSprite(spriteId).collisionEligible).toBe(true))
+      first.forEach(({ spriteId, rotation, artRotation }) => {
+        const definition = resolveFurnitureSprite(spriteId)
+        expect(definition.collisionEligible).toBe(true)
+        const solid = definition.mask.every((row) => !row.includes('0'))
+        if (!solid) expect(artRotation).toBe(rotation)
+        else if (definition.footprint[0] !== definition.footprint[1]) {
+          expect(artRotation % 2).toBe(rotation % 2)
+        }
+      })
     }
   })
 

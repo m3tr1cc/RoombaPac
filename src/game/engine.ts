@@ -1,11 +1,11 @@
 import { availableDirections, createMaze, CURRENT_MAZE_VERSION, isWalkable, mulberry32, neighborPoint, type MazeVersion } from './maze'
 import { fitItemSprite, ITEM_SPRITES, pelletGeometry, PELLET_FILL_COLOR, PELLET_OUTLINE_COLOR } from './collectibleSprites'
-import { FURNITURE_ATLAS_URL, PET_CAGE_SPRITE, resolveBoundarySprite, resolveFurnitureSprite } from './furnitureSprites'
+import { FURNITURE_ATLAS_URL, FURNITURE_REFERENCE_CELL, PET_CAGE_SPRITE, resolveBoundarySprite, resolveFurnitureFrame } from './furnitureSprites'
 import { planFurniturePlacements } from './furnitureLayout'
 import { PET_ATLAS_URL, resolvePetSprite, type PetSpriteFrame } from './petSprites'
 import { ROOMBA_ATLAS_URL, resolveRoombaSprite, type RoombaSpriteFrame } from './roombaSprites'
 import { calculateScore, frightenedDuration, petSpeed, roombaSpeed } from './scoring'
-import { DIRS, OPPOSITE, pointKey, type Actor, type Direction, type FurniturePiece, type GameMode, type GameSnapshot, type Maze, type Pet, type Point } from './types'
+import { DIRS, OPPOSITE, pointKey, type Actor, type Direction, type FurniturePiece, type GameMode, type GameSnapshot, type Maze, type Pet, type Point, type QuarterTurn } from './types'
 
 type EngineOptions = { onSnapshot: (snapshot: GameSnapshot) => void; onSound: (sound: 'dot' | 'item' | 'pet' | 'bump' | 'hit' | 'clear' | 'reset' | 'turn') => void }
 
@@ -222,13 +222,22 @@ export class GameEngine {
   private drawFurniturePiece(ctx: CanvasRenderingContext2D, piece: FurniturePiece, cell: number, ox: number, oy: number) {
     if (!(this.furnitureAtlas.complete && this.furnitureAtlas.naturalWidth)) return
     if (piece.kind === 'boundary') {
-      const rect = resolveBoundarySprite(piece.variant)
       for (const point of piece.cells) {
-        const vertical = point.x === 0 || point.x === this.maze.width - 1
+        const side: QuarterTurn = point.x === 0
+          ? 3
+          : point.x === this.maze.width - 1
+            ? 1
+            : point.y === 0 ? 0 : 2
+        const frame = resolveBoundarySprite(piece.variant, side)
+        const scale = cell / FURNITURE_REFERENCE_CELL
         ctx.save()
         ctx.translate(ox + (point.x + .5) * cell, oy + (point.y + .5) * cell)
-        if (vertical) ctx.rotate(Math.PI / 2)
-        ctx.drawImage(this.furnitureAtlas, rect[0], rect[1], rect[2], rect[3], -cell * .55, -cell * .5, cell * 1.1, cell)
+        ctx.drawImage(
+          this.furnitureAtlas,
+          frame.rect[0], frame.rect[1], frame.rect[2], frame.rect[3],
+          -frame.anchor[0] * scale, -frame.anchor[1] * scale,
+          frame.rect[2] * scale, frame.rect[3] * scale,
+        )
         ctx.restore()
       }
       return
@@ -236,35 +245,34 @@ export class GameEngine {
     if (piece.kind === 'pen') {
       const centerX = ox + (piece.x + piece.width / 2) * cell
       const centerY = oy + (piece.y + piece.height / 2) * cell
-      const sprite = PET_CAGE_SPRITE
+      const frame = PET_CAGE_SPRITE.frame
+      const scale = cell / FURNITURE_REFERENCE_CELL
       ctx.drawImage(
         this.furnitureAtlas,
-        sprite.rect[0], sprite.rect[1], sprite.rect[2], sprite.rect[3],
-        centerX - piece.width * cell / 2,
-        centerY - piece.height * cell / 2,
-        piece.width * cell,
-        piece.height * cell,
+        frame.rect[0], frame.rect[1], frame.rect[2], frame.rect[3],
+        centerX - frame.anchor[0] * scale,
+        centerY - frame.anchor[1] * scale,
+        frame.rect[2] * scale,
+        frame.rect[3] * scale,
       )
       return
     }
 
     for (const placement of planFurniturePlacements(piece, this.maze.theme)) {
-      const sprite = resolveFurnitureSprite(placement.spriteId)
+      const frame = resolveFurnitureFrame(placement.spriteId, placement.artRotation)
       const centerX = ox + (placement.x + placement.width / 2) * cell
       const centerY = oy + (placement.y + placement.height / 2) * cell
-      const drawWidth = sprite.footprint[0] * cell
-      const drawHeight = sprite.footprint[1] * cell
+      const scale = cell / FURNITURE_REFERENCE_CELL
 
       ctx.save()
       ctx.translate(centerX, centerY)
-      ctx.rotate(placement.rotation * Math.PI / 2)
       ctx.drawImage(
         this.furnitureAtlas,
-        sprite.rect[0], sprite.rect[1], sprite.rect[2], sprite.rect[3],
-        -drawWidth / 2,
-        -drawHeight / 2,
-        drawWidth,
-        drawHeight,
+        frame.rect[0], frame.rect[1], frame.rect[2], frame.rect[3],
+        -frame.anchor[0] * scale,
+        -frame.anchor[1] * scale,
+        frame.rect[2] * scale,
+        frame.rect[3] * scale,
       )
       ctx.restore()
     }

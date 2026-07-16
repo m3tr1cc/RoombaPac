@@ -1,8 +1,31 @@
 import type { AtlasRect } from './petSprites'
 import type { QuarterTurn } from './types'
+import {
+  BOUNDARY_ATLAS_FRAMES,
+  FURNITURE_ATLAS_FRAMES,
+  FURNITURE_ATLAS_SIZE,
+  FURNITURE_REFERENCE_CELL,
+  PET_CAGE_FRAME,
+} from './furnitureAtlas.generated'
 
-export const FURNITURE_ATLAS_URL = '/assets/game/roombapac-furniture.png'
-export const FURNITURE_ATLAS_SIZE = { width: 1536, height: 1024 } as const
+export { FURNITURE_ATLAS_SIZE, FURNITURE_REFERENCE_CELL }
+
+export const FURNITURE_ATLAS_URL = '/assets/game/roombapac-furniture-v2.png'
+
+export type FurnitureSpriteFrame = {
+  rect: AtlasRect
+  anchor: readonly [x: number, y: number]
+  referenceSize: readonly [width: number, height: number]
+  opaqueBounds: readonly [left: number, top: number, right: number, bottom: number]
+  authored: true
+}
+
+export type FurnitureSpriteFrames = readonly [
+  FurnitureSpriteFrame,
+  FurnitureSpriteFrame,
+  FurnitureSpriteFrame,
+  FurnitureSpriteFrame,
+]
 
 export type FurnitureFamily =
   | 'chair'
@@ -20,7 +43,7 @@ export type FurnitureFamily =
 
 export type FurnitureSpriteDefinition = {
   id: string
-  rect: AtlasRect
+  frames: FurnitureSpriteFrames
   footprint: readonly [width: number, height: number]
   mask: readonly string[]
   family: FurnitureFamily
@@ -39,8 +62,8 @@ const DECOR_THEMES = [1, 4, 5, 7, 8] as const
 const solidMask = (width: number, height: number) => Array.from({ length: height }, () => '1'.repeat(width))
 
 function sprite(
-  id: string,
-  rect: AtlasRect,
+  id: keyof typeof FURNITURE_ATLAS_FRAMES,
+  _legacyRect: AtlasRect,
   footprint: readonly [number, number],
   family: FurnitureFamily,
   themes: readonly number[] = ALL_THEMES,
@@ -48,7 +71,7 @@ function sprite(
   collisionEligible = true,
   mask: readonly string[] = solidMask(...footprint),
 ): FurnitureSpriteDefinition {
-  return { id, rect, footprint, mask, family, themes, rotations, collisionEligible }
+  return { id, frames: FURNITURE_ATLAS_FRAMES[id], footprint, mask, family, themes, rotations, collisionEligible }
 }
 
 const oneCellSprites = [
@@ -160,22 +183,19 @@ export function resolveFurnitureSprite(id: string) {
   return definition
 }
 
+export function resolveFurnitureFrame(id: string, rotation: QuarterTurn) {
+  return resolveFurnitureSprite(id).frames[rotation]
+}
+
 export function furnitureSpriteCount() {
   return FURNITURE_SPRITES.length
 }
 
-export const PET_CAGE_SPRITE: Pick<FurnitureSpriteDefinition, 'rect' | 'footprint'> = {
-  rect: [1168, 585, 222, 216],
+export const PET_CAGE_SPRITE: { frame: FurnitureSpriteFrame; footprint: readonly [number, number] } = {
+  frame: PET_CAGE_FRAME,
   footprint: [7, 5],
 }
 
-const BOUNDARY_SPRITES: AtlasRect[] = [
-  [26, 858, 253, 31],
-  [304, 858, 146, 31],
-  [475, 858, 152, 31],
-  [410, 936, 319, 34],
-]
-
-export function resolveBoundarySprite(variant: number) {
-  return BOUNDARY_SPRITES[variant % BOUNDARY_SPRITES.length]
+export function resolveBoundarySprite(variant: number, side: QuarterTurn) {
+  return BOUNDARY_ATLAS_FRAMES[variant % BOUNDARY_ATLAS_FRAMES.length][side]
 }

@@ -4,6 +4,7 @@ import { pointKey, type FurniturePiece, type Point, type QuarterTurn } from './t
 export type FurniturePlacement = Point & {
   spriteId: string
   rotation: QuarterTurn
+  artRotation: QuarterTurn
   width: number
   height: number
   cells: Point[]
@@ -62,6 +63,7 @@ function candidatePlacements(target: Point, uncovered: ReadonlySet<string>) {
         y,
         spriteId: definition.id,
         rotation,
+        artRotation: rotation,
         width: oriented.width,
         height: oriented.height,
         cells,
@@ -73,6 +75,20 @@ function candidatePlacements(target: Point, uncovered: ReadonlySet<string>) {
 
 function familyFor(placement: FurniturePlacement) {
   return resolveFurnitureSprite(placement.spriteId).family
+}
+
+function artRotationFor(placement: FurniturePlacement, piece: FurniturePiece): QuarterTurn {
+  const definition = resolveFurnitureSprite(placement.spriteId)
+  const solid = definition.mask.every((row) => !row.includes('0'))
+  if (!solid) return placement.rotation
+
+  const orientationHash = stableHash(
+    `${piece.id}:${placement.x}:${placement.y}:${placement.spriteId}:art`,
+    piece.variant,
+  )
+  const [width, height] = definition.footprint
+  if (width === height) return (orientationHash % 4) as QuarterTurn
+  return ((placement.rotation + (orientationHash % 2) * 2) % 4) as QuarterTurn
 }
 
 export function furniturePlacementCells(placement: FurniturePlacement) {
@@ -118,6 +134,7 @@ export function planFurniturePlacements(piece: FurniturePiece, theme: number): F
 
     const chosen = candidates[0]
     if (!chosen) throw new Error(`Furniture catalog cannot cover ${targetKey} in ${piece.id}`)
+    chosen.artRotation = artRotationFor(chosen, piece)
     placements.push(chosen)
     chosen.cells.forEach((cell) => uncovered.delete(pointKey(cell)))
     const family = familyFor(chosen)
