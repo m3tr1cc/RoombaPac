@@ -24,7 +24,7 @@
 - Fonts and typography: the existing RoombaPac HUD typography and hierarchy are unchanged and remain legible at both checked viewports.
 - Spacing and layout rhythm: exact module footprints align furniture centers to the cell grid, preserve one-cell hallways, and keep the cage centered.
 - Colors and visual tokens: the warm floor tile remains continuous beneath transparent furniture; no extra brown underlay changes the world palette.
-- Image quality and asset fidelity: corrected source rectangles capture complete chairs, sofas, and cabinets; nearest-neighbor Canvas rendering stays crisp, and all pieces come from the supplied alpha atlas.
+- Image quality and asset fidelity: all 75 catalog entries now expose four atlas frames on a consistent 96-pixel-per-cell grid. Directional furniture is authored or normalized per view, including full-length vertical sofas, while Canvas uses uniform nearest-neighbor scaling with no furniture rotation or footprint stretching.
 - Copy and content: no user-facing copy changed; scoring, lives, and level labels remain correct.
 - Icons and interactions: existing Phosphor controls remain aligned and functional; run start and a touch direction were exercised.
 - Accessibility and responsiveness: semantic labels remain present, mobile touch targets remain usable, and no new motion is introduced.
@@ -70,6 +70,7 @@
 - [x] Preserve connected, no-dead-end routes and real wrap tunnels.
 - [x] Verify active desktop play and mobile touch controls.
 - [x] Verify the compact board fills the 16:9 surface without clipping at desktop and mobile landscape sizes.
+- [x] Verify every production furniture crop in `docs/qa/furniture-v2-contact-sheet.png` and exercise desktop keyboard, mobile touch, pause, and reset states without console errors.
 - [x] Check console warnings and errors at desktop and mobile viewports.
 
 **Follow-up Polish**
