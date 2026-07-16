@@ -17,11 +17,22 @@ describe('maze topology integration', () => {
   it('keeps the player outside the pet-cage interior', () => {
     const engine = new GameEngine({ onSnapshot: vi.fn(), onSound: vi.fn() })
     engine.start(1234)
-    engine.roomba = { x: 15, y: 10, direction: 'up', nextDirection: 'up', progress: 0 }
+    engine.roomba = { x: 13, y: 9, direction: 'up', nextDirection: 'up', progress: 0 }
 
     engine.update(0.05, 1_000)
 
-    expect(engine.roomba).toMatchObject({ x: 15, y: 10, progress: 0 })
+    expect(engine.roomba).toMatchObject({ x: 13, y: 9, progress: 0 })
+  })
+
+  it('uses and retains the requested maze version through level changes', () => {
+    const engine = new GameEngine({ onSnapshot: vi.fn(), onSound: vi.fn() })
+    engine.start(1234, 1)
+    expect(engine.maze).toMatchObject({ width: 31, height: 17 })
+    engine.maze.pellets.clear()
+    engine.maze.items.clear()
+    engine.update(0.016, 1_000)
+    engine.update(0.016, 2_300)
+    expect(engine.maze).toMatchObject({ width: 31, height: 17 })
   })
 
   it('advances into a different deterministic procedural room', () => {

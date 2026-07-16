@@ -1,15 +1,74 @@
 import { DIRS, pointKey, type Cell, type Direction, type FurnitureKind, type FurniturePiece, type Maze, type ObstacleCategory, type Point, type QuarterTurn, type TunnelPair } from './types.js'
 
-export const MAZE_WIDTH = 31
-export const MAZE_HEIGHT = 17
+export type MazeVersion = 1 | 2
+
+export const LEGACY_MAZE_VERSION: MazeVersion = 1
+export const CURRENT_MAZE_VERSION: MazeVersion = 2
+export const MAZE_WIDTH = 27
+export const MAZE_HEIGHT = 15
+export const COMPACT_OBSTACLE_QUOTAS = {
+  room: 3,
+  linear: 5,
+  junction: 4,
+  hybrid: 2,
+  corner: 2,
+  block: 2,
+} as const
+export const COMPACT_HELPER_LIMITS = {
+  pieces: 12,
+  cells: 24,
+  minLength: 2,
+  maxLength: 4,
+} as const
 
 type CoarsePoint = { x: number; y: number }
 type Edge = { a: CoarsePoint; b: CoarsePoint }
 
-const PEN_BOUNDS = { x: 12, y: 6, width: 7, height: 5 }
-const SPAWN = { x: 15, y: 15 }
-const PEN_HOME = { x: 15, y: 8 }
-const LEVEL_ONE_TUNNEL_ROW = 8
+type MazeLayout = {
+  version: MazeVersion
+  width: number
+  height: number
+  coarseWidth: number
+  coarseHeight: number
+  reserved: { minX: number; maxX: number; minY: number; maxY: number }
+  penBounds: { x: number; y: number; width: number; height: number }
+  spawn: Point
+  penHome: Point
+  penExitEnd: number
+  levelOneTunnelRow: number
+  proceduralTunnelRows: readonly [number, number]
+}
+
+const LAYOUTS: Record<MazeVersion, MazeLayout> = {
+  1: {
+    version: 1,
+    width: 31,
+    height: 17,
+    coarseWidth: 15,
+    coarseHeight: 8,
+    reserved: { minX: 6, maxX: 8, minY: 3, maxY: 4 },
+    penBounds: { x: 12, y: 6, width: 7, height: 5 },
+    spawn: { x: 15, y: 15 },
+    penHome: { x: 15, y: 8 },
+    penExitEnd: 13,
+    levelOneTunnelRow: 8,
+    proceduralTunnelRows: [6, 10],
+  },
+  2: {
+    version: 2,
+    width: MAZE_WIDTH,
+    height: MAZE_HEIGHT,
+    coarseWidth: 13,
+    coarseHeight: 7,
+    reserved: { minX: 5, maxX: 7, minY: 2, maxY: 4 },
+    penBounds: { x: 10, y: 5, width: 7, height: 5 },
+    spawn: { x: 13, y: 13 },
+    penHome: { x: 13, y: 7 },
+    penExitEnd: 11,
+    levelOneTunnelRow: 7,
+    proceduralTunnelRows: [5, 7],
+  },
+}
 
 export function mulberry32(seed: number) {
   let value = seed >>> 0
@@ -33,18 +92,19 @@ function shuffled<T>(values: readonly T[], random: () => number) {
 
 const coarseKey = ({ x, y }: CoarsePoint) => `${x},${y}`
 const edgeKey = ({ a, b }: Edge) => [coarseKey(a), coarseKey(b)].sort().join('|')
-const mirrorPoint = ({ x, y }: CoarsePoint): CoarsePoint => ({ x: 14 - x, y })
-const mirrorEdge = ({ a, b }: Edge): Edge => ({ a: mirrorPoint(a), b: mirrorPoint(b) })
+const mirrorPoint = ({ x, y }: CoarsePoint, layout: MazeLayout): CoarsePoint => ({ x: layout.coarseWidth - 1 - x, y })
+const mirrorEdge = ({ a, b }: Edge, layout: MazeLayout): Edge => ({ a: mirrorPoint(a, layout), b: mirrorPoint(b, layout) })
 const gridPoint = ({ x, y }: CoarsePoint): Point => ({ x: x * 2 + 1, y: y * 2 + 1 })
 
-function isReservedNode({ x, y }: CoarsePoint) {
-  return x >= 6 && x <= 8 && y >= 3 && y <= 4
+function isReservedNode({ x, y }: CoarsePoint, layout: MazeLayout) {
+  const { reserved } = layout
+  return x >= reserved.minX && x <= reserved.maxX && y >= reserved.minY && y <= reserved.maxY
 }
 
-function allNodes() {
+function allNodes(layout: MazeLayout) {
   const nodes: CoarsePoint[] = []
-  for (let y = 0; y < 8; y += 1) for (let x = 0; x < 15; x += 1) {
-    if (!isReservedNode({ x, y })) nodes.push({ x, y })
+  for (let y = 0; y < layout.coarseHeight; y += 1) for (let x = 0; x < layout.coarseWidth; x += 1) {
+    if (!isReservedNode({ x, y }, layout)) nodes.push({ x, y })
   }
   return nodes
 }
@@ -80,14 +140,14 @@ class DisjointSet {
   }
 }
 
-function edgeGroups(edges: readonly Edge[]) {
+function edgeGroups(edges: readonly Edge[], layout: MazeLayout) {
   const byKey = new Map(edges.map((edge) => [edgeKey(edge), edge]))
   const visited = new Set<string>()
   const groups: Edge[][] = []
   for (const edge of edges) {
     const key = edgeKey(edge)
     if (visited.has(key)) continue
-    const mirrored = byKey.get(edgeKey(mirrorEdge(edge)))
+    const mirrored = byKey.get(edgeKey(mirrorEdge(edge, layout)))
     const group = mirrored && edgeKey(mirrored) !== key ? [edge, mirrored] : [edge]
     group.forEach((item) => visited.add(edgeKey(item)))
     groups.push(group)
@@ -95,10 +155,10 @@ function edgeGroups(edges: readonly Edge[]) {
   return groups
 }
 
-function generateProceduralEdges(random: () => number) {
-  const nodes = allNodes()
+function generateProceduralEdges(random: () => number, layout: MazeLayout) {
+  const nodes = allNodes(layout)
   const edges = allEdges(nodes)
-  const groups = shuffled(edgeGroups(edges), random)
+  const groups = shuffled(edgeGroups(edges, layout), random)
   const selected = new Map<string, Edge>()
   const set = new DisjointSet(nodes.map(coarseKey))
   const addGroup = (group: readonly Edge[]) => group.forEach((edge) => {
@@ -137,18 +197,19 @@ function generateProceduralEdges(random: () => number) {
   return [...selected.values()]
 }
 
-function generateLevelOneEdges() {
+function generateLevelOneEdges(layout: MazeLayout) {
   // A fixed, production-safe blueprint selected from the constrained generator
-  // because it contains every annotated furniture topology while preserving the
-  // landscape cage and tunnel composition. It is independent of the run seed.
+  // to preserve the landscape cage and tunnel composition. It is independent
+  // of the run seed.
   const random = mulberry32(1013905061)
   random() // Match the tunnel-choice draw made by procedural levels.
-  return generateProceduralEdges(random)
+  return generateProceduralEdges(random, layout)
 }
 
-function carveMaze(edges: readonly Edge[], tunnelRow: number) {
-  const cells: Cell[][] = Array.from({ length: MAZE_HEIGHT }, () => Array<Cell>(MAZE_WIDTH).fill(1))
-  for (const node of allNodes()) {
+function carveMaze(edges: readonly Edge[], tunnelRow: number, layout: MazeLayout) {
+  const { width, height, penBounds, penHome } = layout
+  const cells: Cell[][] = Array.from({ length: height }, () => Array<Cell>(width).fill(1))
+  for (const node of allNodes(layout)) {
     const point = gridPoint(node)
     cells[point.y][point.x] = 0
   }
@@ -157,44 +218,43 @@ function carveMaze(edges: readonly Edge[], tunnelRow: number) {
     cells[(a.y + b.y) / 2][(a.x + b.x) / 2] = 0
   }
 
-  for (let y = PEN_BOUNDS.y; y < PEN_BOUNDS.y + PEN_BOUNDS.height; y += 1) {
-    for (let x = PEN_BOUNDS.x; x < PEN_BOUNDS.x + PEN_BOUNDS.width; x += 1) cells[y][x] = 1
+  for (let y = penBounds.y; y < penBounds.y + penBounds.height; y += 1) {
+    for (let x = penBounds.x; x < penBounds.x + penBounds.width; x += 1) cells[y][x] = 1
   }
-  for (let y = PEN_BOUNDS.y + 1; y < PEN_BOUNDS.y + PEN_BOUNDS.height - 1; y += 1) {
-    for (let x = PEN_BOUNDS.x + 1; x < PEN_BOUNDS.x + PEN_BOUNDS.width - 1; x += 1) cells[y][x] = 0
+  for (let y = penBounds.y + 1; y < penBounds.y + penBounds.height - 1; y += 1) {
+    for (let x = penBounds.x + 1; x < penBounds.x + penBounds.width - 1; x += 1) cells[y][x] = 0
   }
-  cells[PEN_BOUNDS.y + PEN_BOUNDS.height - 1][PEN_HOME.x] = 0
-  cells[11][PEN_HOME.x] = 0
-  cells[12][PEN_HOME.x] = 0
-  cells[13][PEN_HOME.x] = 0
+  cells[penBounds.y + penBounds.height - 1][penHome.x] = 0
+  for (let y = penBounds.y + penBounds.height; y <= layout.penExitEnd; y += 1) cells[y][penHome.x] = 0
 
   cells[tunnelRow][0] = cells[tunnelRow][1] = 0
-  cells[tunnelRow][MAZE_WIDTH - 2] = cells[tunnelRow][MAZE_WIDTH - 1] = 0
+  cells[tunnelRow][width - 2] = cells[tunnelRow][width - 1] = 0
   cells[tunnelRow - 1][1] = cells[tunnelRow + 1][1] = 0
-  cells[tunnelRow - 1][MAZE_WIDTH - 2] = cells[tunnelRow + 1][MAZE_WIDTH - 2] = 0
+  cells[tunnelRow - 1][width - 2] = cells[tunnelRow + 1][width - 2] = 0
 
   return cells
 }
 
-function boundaryCells(cells: Cell[][]) {
+function boundaryCells(cells: Cell[][], layout: MazeLayout) {
   const result: Point[] = []
-  for (let x = 0; x < MAZE_WIDTH; x += 1) {
+  for (let x = 0; x < layout.width; x += 1) {
     if (cells[0][x]) result.push({ x, y: 0 })
-    if (cells[MAZE_HEIGHT - 1][x]) result.push({ x, y: MAZE_HEIGHT - 1 })
+    if (cells[layout.height - 1][x]) result.push({ x, y: layout.height - 1 })
   }
-  for (let y = 1; y < MAZE_HEIGHT - 1; y += 1) {
+  for (let y = 1; y < layout.height - 1; y += 1) {
     if (cells[y][0]) result.push({ x: 0, y })
-    if (cells[y][MAZE_WIDTH - 1]) result.push({ x: MAZE_WIDTH - 1, y })
+    if (cells[y][layout.width - 1]) result.push({ x: layout.width - 1, y })
   }
   return result
 }
 
-function penCells() {
+function penCells(layout: MazeLayout) {
   const result: Point[] = []
-  for (let y = PEN_BOUNDS.y; y < PEN_BOUNDS.y + PEN_BOUNDS.height; y += 1) {
-    for (let x = PEN_BOUNDS.x; x < PEN_BOUNDS.x + PEN_BOUNDS.width; x += 1) {
-      const edge = x === PEN_BOUNDS.x || x === PEN_BOUNDS.x + PEN_BOUNDS.width - 1 || y === PEN_BOUNDS.y || y === PEN_BOUNDS.y + PEN_BOUNDS.height - 1
-      if (edge && !(y === PEN_BOUNDS.y + PEN_BOUNDS.height - 1 && x === PEN_HOME.x)) result.push({ x, y })
+  const { penBounds, penHome } = layout
+  for (let y = penBounds.y; y < penBounds.y + penBounds.height; y += 1) {
+    for (let x = penBounds.x; x < penBounds.x + penBounds.width; x += 1) {
+      const edge = x === penBounds.x || x === penBounds.x + penBounds.width - 1 || y === penBounds.y || y === penBounds.y + penBounds.height - 1
+      if (edge && !(y === penBounds.y + penBounds.height - 1 && x === penHome.x)) result.push({ x, y })
     }
   }
   return result
@@ -217,13 +277,13 @@ function componentCategory(points: readonly Point[]): { category: ObstacleCatego
   return { category: 2, kind: 'corner', rotation: 0 }
 }
 
-function buildFurniture(cells: Cell[][], theme: number) {
-  const excluded = new Set([...boundaryCells(cells), ...penCells()].map(pointKey))
+function buildFurniture(cells: Cell[][], theme: number, layout: MazeLayout) {
+  const excluded = new Set([...boundaryCells(cells, layout), ...penCells(layout)].map(pointKey))
   const seen = new Set<string>()
   const furniture: FurniturePiece[] = []
   let index = 0
 
-  for (let y = 1; y < MAZE_HEIGHT - 1; y += 1) for (let x = 1; x < MAZE_WIDTH - 1; x += 1) {
+  for (let y = 1; y < layout.height - 1; y += 1) for (let x = 1; x < layout.width - 1; x += 1) {
     const start = { x, y }, startKey = pointKey(start)
     if (cells[y][x] !== 1 || excluded.has(startKey) || seen.has(startKey)) continue
     const queue = [start], points: Point[] = []
@@ -233,7 +293,7 @@ function buildFurniture(cells: Cell[][], theme: number) {
       points.push(current)
       for (const delta of Object.values(DIRS)) {
         const next = { x: current.x + delta.x, y: current.y + delta.y }, key = pointKey(next)
-        if (next.x <= 0 || next.x >= MAZE_WIDTH - 1 || next.y <= 0 || next.y >= MAZE_HEIGHT - 1) continue
+        if (next.x <= 0 || next.x >= layout.width - 1 || next.y <= 0 || next.y >= layout.height - 1) continue
         if (cells[next.y][next.x] === 1 && !excluded.has(key) && !seen.has(key)) { seen.add(key); queue.push(next) }
       }
     }
@@ -247,18 +307,289 @@ function buildFurniture(cells: Cell[][], theme: number) {
     })
   }
 
-  const boundary = boundaryCells(cells)
-  furniture.unshift({ id: 'boundary', x: 0, y: 0, width: MAZE_WIDTH, height: MAZE_HEIGHT, cells: boundary, category: 9, kind: 'boundary', variant: theme })
-  furniture.push({ id: 'pet-cage', ...PEN_BOUNDS, cells: penCells(), category: 8, kind: 'pen', variant: theme })
+  const boundary = boundaryCells(cells, layout)
+  furniture.unshift({ id: 'boundary', x: 0, y: 0, width: layout.width, height: layout.height, cells: boundary, category: 9, kind: 'boundary', variant: theme })
+  furniture.push({ id: 'pet-cage', ...layout.penBounds, cells: penCells(layout), category: 8, kind: 'pen', variant: theme })
   return furniture
+}
+
+type CompactQuotaKind = keyof typeof COMPACT_OBSTACLE_QUOTAS
+
+const COMPACT_MASKS: Record<CompactQuotaKind, readonly string[]> = {
+  room: ['11111', '11111', '11111'],
+  linear: ['111'],
+  junction: ['111', '111', '010'],
+  hybrid: ['111', '100', '100'],
+  corner: ['111', '111', '100'],
+  block: ['1'],
+}
+
+const COMPACT_KIND_METADATA: Record<CompactQuotaKind, { kind: FurnitureKind; category: ObstacleCategory }> = {
+  room: { kind: 'room', category: 7 },
+  linear: { kind: 'straight', category: 1 },
+  junction: { kind: 'junction', category: 3 },
+  hybrid: { kind: 'alcove', category: 6 },
+  corner: { kind: 'corner', category: 2 },
+  block: { kind: 'block', category: 5 },
+}
+
+function rotateMaskPoint(point: Point, width: number, height: number, rotation: QuarterTurn): Point {
+  if (rotation === 0) return point
+  if (rotation === 1) return { x: height - 1 - point.y, y: point.x }
+  if (rotation === 2) return { x: width - 1 - point.x, y: height - 1 - point.y }
+  return { x: point.y, y: width - 1 - point.x }
+}
+
+function makeCompactPiece(id: string, quotaKind: CompactQuotaKind, x: number, y: number, rotation: QuarterTurn, variant: number): FurniturePiece {
+  const mask = COMPACT_MASKS[quotaKind]
+  const sourceWidth = mask[0].length, sourceHeight = mask.length
+  const offsets = mask.flatMap((row, rowIndex) => [...row].flatMap((value, columnIndex) => (
+    value === '1' ? [rotateMaskPoint({ x: columnIndex, y: rowIndex }, sourceWidth, sourceHeight, rotation)] : []
+  )))
+  const sideways = rotation % 2 === 1
+  const width = sideways ? sourceHeight : sourceWidth
+  const height = sideways ? sourceWidth : sourceHeight
+  const metadata = COMPACT_KIND_METADATA[quotaKind]
+  return {
+    id,
+    x,
+    y,
+    width,
+    height,
+    cells: offsets.map((point) => ({ x: x + point.x, y: y + point.y })),
+    kind: metadata.kind,
+    category: metadata.category,
+    rotation,
+    variant,
+    generationRole: 'quota',
+  }
+}
+
+function mirrorCompactPiece(piece: FurniturePiece, layout: MazeLayout): FurniturePiece {
+  const cells = piece.cells.map((point) => ({ x: layout.width - 1 - point.x, y: point.y }))
+  const minX = Math.min(...cells.map((point) => point.x)), maxX = Math.max(...cells.map((point) => point.x))
+  const minY = Math.min(...cells.map((point) => point.y)), maxY = Math.max(...cells.map((point) => point.y))
+  return { ...piece, id: `${piece.id}-mirror`, x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1, cells, variant: piece.variant ^ 0x9e3779b9 }
+}
+
+type CompactHelperCandidate = {
+  groups: Point[][]
+  cells: Point[]
+  covers: number[]
+  length: number
+  rotation: QuarterTurn
+}
+
+type CompactHelperGroup = { cells: Point[]; rotation: QuarterTurn }
+const compactHelperSolutionCache = new Map<string, CompactHelperGroup[]>()
+
+function isCompactPenInterior(point: Point, layout: MazeLayout) {
+  const { penBounds } = layout
+  return point.x > penBounds.x && point.x < penBounds.x + penBounds.width - 1 && point.y > penBounds.y && point.y < penBounds.y + penBounds.height - 1
+}
+
+function compactFloorIsSafe(cells: Cell[][], layout: MazeLayout) {
+  let start: Point | undefined
+  let walkable = 0
+  const neighbors = (point: Point) => Object.values(DIRS).flatMap((delta) => {
+    let x = point.x + delta.x
+    const y = point.y + delta.y
+    if (x < 0) x = layout.width - 1
+    if (x >= layout.width) x = 0
+    return y >= 0 && y < layout.height && cells[y][x] === 0 ? [{ x, y }] : []
+  })
+
+  for (let y = 0; y < layout.height; y += 1) for (let x = 0; x < layout.width; x += 1) {
+    if (cells[y][x] !== 0) continue
+    const point = { x, y }
+    start ??= point
+    walkable += 1
+    if (!isCompactPenInterior(point, layout) && neighbors(point).length < 2) return false
+  }
+  if (!start) return false
+
+  const queue = [start]
+  const seen = new Set([pointKey(start)])
+  while (queue.length) for (const next of neighbors(queue.shift()!)) {
+    const key = pointKey(next)
+    if (!seen.has(key)) { seen.add(key); queue.push(next) }
+  }
+  return seen.size === walkable
+}
+
+function compactOpenSquares(cells: Cell[][], layout: MazeLayout) {
+  const squares: Point[][] = []
+  for (let y = 0; y < layout.height - 1; y += 1) for (let x = 0; x < layout.width - 1; x += 1) {
+    const points = [{ x, y }, { x: x + 1, y }, { x, y: y + 1 }, { x: x + 1, y: y + 1 }]
+    if (points.every((point) => cells[point.y][point.x] === 0) && !points.every((point) => isCompactPenInterior(point, layout))) squares.push(points)
+  }
+  return squares
+}
+
+function compactHelperCandidates(cells: Cell[][], squares: readonly Point[][], layout: MazeLayout) {
+  const candidates: CompactHelperCandidate[] = []
+  const seen = new Set<string>()
+  for (let length = COMPACT_HELPER_LIMITS.minLength; length <= COMPACT_HELPER_LIMITS.maxLength; length += 1) {
+    for (const rotation of [0, 1] as const) for (let y = 1; y < layout.height - 1; y += 1) for (let x = 1; x < layout.width - 1; x += 1) {
+      const group = Array.from({ length }, (_, index) => ({ x: x + (rotation === 0 ? index : 0), y: y + (rotation === 1 ? index : 0) }))
+      if (group.some((point) => point.x >= layout.width - 1 || point.y >= layout.height - 1)) continue
+      const mirror = group.map((point) => ({ x: layout.width - 1 - point.x, y: point.y }))
+      const groupKey = group.map(pointKey).sort().join('|')
+      const mirrorKey = mirror.map(pointKey).sort().join('|')
+      const candidateKey = [groupKey, mirrorKey].sort().join('::')
+      if (seen.has(candidateKey)) continue
+      seen.add(candidateKey)
+      const groups = groupKey === mirrorKey ? [group] : [group, mirror]
+      const unique = new Map(groups.flat().map((point) => [pointKey(point), point]))
+      if (unique.size !== length * groups.length) continue
+      const points = [...unique.values()]
+      if (points.some((point) => cells[point.y][point.x] !== 0 || isCompactPenInterior(point, layout) || pointKey(point) === pointKey(layout.spawn))) continue
+      const covers = squares.flatMap((square, index) => square.some((point) => unique.has(pointKey(point))) ? [index] : [])
+      if (covers.length) candidates.push({ groups, cells: points, covers, length, rotation })
+    }
+  }
+  return candidates
+}
+
+function buildCompactHelpers(cells: Cell[][], pieceOffset: number, seed: number, tunnelRow: number, layout: MazeLayout) {
+  const geometryKey = `${cells.map((row) => row.join('')).join('/')}:${(seed >>> 8) % 4}`
+  const makeHelpers = (groups: readonly CompactHelperGroup[]) => groups.map(({ cells: group, rotation }, helperIndex): FurniturePiece => {
+    const minX = Math.min(...group.map((point) => point.x)), maxX = Math.max(...group.map((point) => point.x))
+    const minY = Math.min(...group.map((point) => point.y)), maxY = Math.max(...group.map((point) => point.y))
+    group.forEach((point) => { cells[point.y][point.x] = 1 })
+    return {
+      id: `compact-helper-${helperIndex}`,
+      x: minX,
+      y: minY,
+      width: maxX - minX + 1,
+      height: maxY - minY + 1,
+      cells: group.map((point) => ({ ...point })),
+      kind: 'straight',
+      category: 1,
+      rotation,
+      variant: (seed ^ Math.imul(pieceOffset + helperIndex + 1, 0x9e3779b9)) >>> 0,
+      generationRole: 'helper',
+    }
+  })
+  const cached = compactHelperSolutionCache.get(geometryKey)
+  if (cached) return makeHelpers(cached)
+
+  const squares = compactOpenSquares(cells, layout)
+  if (!squares.length) return []
+  const candidates = compactHelperCandidates(cells, squares, layout)
+  const candidatesBySquare = squares.map((_, squareIndex) => candidates.flatMap((candidate, candidateIndex) => candidate.covers.includes(squareIndex) ? [candidateIndex] : []))
+  let visited = 0
+  let solution: number[] | undefined
+
+  const search = (grid: Cell[][], covered: ReadonlySet<number>, chosen: readonly number[], helperCells: number, helperPieces: number): boolean => {
+    visited += 1
+    if (visited > 250_000) return false
+    if (covered.size === squares.length) { solution = [...chosen]; return true }
+
+    let options: number[] | undefined
+    for (let squareIndex = 0; squareIndex < squares.length; squareIndex += 1) {
+      if (covered.has(squareIndex)) continue
+      const available = candidatesBySquare[squareIndex].filter((candidateIndex) => {
+        const candidate = candidates[candidateIndex]
+        return helperCells + candidate.cells.length <= COMPACT_HELPER_LIMITS.cells &&
+          helperPieces + candidate.groups.length <= COMPACT_HELPER_LIMITS.pieces &&
+          candidate.cells.every((point) => grid[point.y][point.x] === 0)
+      })
+      if (!available.length) return false
+      if (!options || available.length < options.length) options = available
+    }
+
+    const usedLengths = new Set(chosen.map((candidateIndex) => candidates[candidateIndex].length))
+    const usedRotations = new Set(chosen.map((candidateIndex) => candidates[candidateIndex].rotation))
+    options!.sort((leftIndex, rightIndex) => {
+      const left = candidates[leftIndex], right = candidates[rightIndex]
+      const leftCoverage = left.covers.filter((index) => !covered.has(index)).length
+      const rightCoverage = right.covers.filter((index) => !covered.has(index)).length
+      const efficiency = rightCoverage * left.cells.length - leftCoverage * right.cells.length
+      if (efficiency) return efficiency
+      const lengthDiversity = Number(!usedLengths.has(right.length)) - Number(!usedLengths.has(left.length))
+      if (lengthDiversity) return lengthDiversity
+      const rotationDiversity = Number(!usedRotations.has(right.rotation)) - Number(!usedRotations.has(left.rotation))
+      if (rotationDiversity) return rotationDiversity
+      const leftHash = (seed ^ Math.imul(leftIndex + 1, 0x45d9f3b)) >>> 0
+      const rightHash = (seed ^ Math.imul(rightIndex + 1, 0x45d9f3b)) >>> 0
+      return leftHash - rightHash
+    })
+
+    for (const candidateIndex of options!.slice(0, 24)) {
+      const candidate = candidates[candidateIndex]
+      const nextGrid = grid.map((row) => [...row])
+      candidate.cells.forEach((point) => { nextGrid[point.y][point.x] = 1 })
+      if (!compactFloorIsSafe(nextGrid, layout)) continue
+      const nextCovered = new Set(covered)
+      candidate.covers.forEach((index) => nextCovered.add(index))
+      if (search(nextGrid, nextCovered, [...chosen, candidateIndex], helperCells + candidate.cells.length, helperPieces + candidate.groups.length)) return true
+    }
+    return false
+  }
+
+  if (!compactFloorIsSafe(cells, layout)) throw new Error(`Unsafe compact quota layout for seed ${seed} and tunnel ${tunnelRow}`)
+  if (!search(cells, new Set(), [], 0, 0) || !solution) {
+    throw new Error(`Unable to build compact single-lane helpers for seed ${seed} and tunnel ${tunnelRow}`)
+  }
+
+  const groups = solution.flatMap((candidateIndex) => candidates[candidateIndex].groups.map((group) => ({
+    cells: group.map((point) => ({ ...point })),
+    rotation: candidates[candidateIndex].rotation,
+  })))
+  compactHelperSolutionCache.set(geometryKey, groups)
+  return makeHelpers(groups)
+}
+
+function buildCompactWorld(seed: number, tunnelRow: number, theme: number, layout: MazeLayout) {
+  const cells: Cell[][] = Array.from({ length: layout.height }, () => Array<Cell>(layout.width).fill(0))
+  for (let x = 0; x < layout.width; x += 1) cells[0][x] = cells[layout.height - 1][x] = 1
+  for (let y = 1; y < layout.height - 1; y += 1) cells[y][0] = cells[y][layout.width - 1] = 1
+  cells[tunnelRow][0] = cells[tunnelRow][layout.width - 1] = 0
+  penCells(layout).forEach((point) => { cells[point.y][point.x] = 1 })
+
+  let pieceIndex = 0
+  const pieces: FurniturePiece[] = []
+  const addPair = (quotaKind: CompactQuotaKind, x: number, y: number, pieceRotation: QuarterTurn) => {
+    const piece = makeCompactPiece(`compact-${pieceIndex++}`, quotaKind, x, y, pieceRotation, (seed + pieceIndex * 0x45d9f3b) >>> 0)
+    pieces.push(piece, mirrorCompactPiece(piece, layout))
+  }
+
+  const layoutVariant = (seed >>> 4) % 4
+  addPair('room', 1, 1, 0)
+  addPair('junction', 2, 5, 0)
+  addPair('hybrid', 6, 5, layoutVariant as QuarterTurn)
+  addPair('junction', 2, 9, 2)
+  addPair('corner', 6, 9, 2)
+  addPair('linear', 10, 10, 0)
+  addPair('linear', 5, 13, 0)
+  addPair('block', 1, tunnelRow === 9 ? 13 : 8, 0)
+  pieces.push(makeCompactPiece(`compact-${pieceIndex++}`, 'room', 11, 1, 0, seed ^ 0x27d4eb2d))
+  pieces.push(makeCompactPiece(`compact-${pieceIndex++}`, 'linear', 12, 12, 0, seed ^ 0x165667b1))
+
+  for (const piece of pieces) for (const point of piece.cells) {
+    if (cells[point.y]?.[point.x] !== 0) throw new Error(`Compact obstacle ${piece.id} overlaps another wall at ${pointKey(point)}`)
+    cells[point.y][point.x] = 1
+  }
+
+  const helpers = buildCompactHelpers(cells, pieces.length, seed, tunnelRow, layout)
+  pieces.push(...helpers)
+
+  const boundary = boundaryCells(cells, layout)
+  const furniture: FurniturePiece[] = [
+    { id: 'boundary', x: 0, y: 0, width: layout.width, height: layout.height, cells: boundary, category: 9, kind: 'boundary', variant: theme },
+    ...pieces,
+    { id: 'pet-cage', ...layout.penBounds, cells: penCells(layout), category: 8, kind: 'pen', variant: theme },
+  ]
+  return { cells, furniture }
 }
 
 export function furnitureCells(piece: FurniturePiece): Point[] {
   return piece.cells.map((point) => ({ ...point }))
 }
 
-function tunnelPair(row: number): TunnelPair {
-  return { left: { x: 0, y: row }, right: { x: MAZE_WIDTH - 1, y: row } }
+function tunnelPair(row: number, layout: MazeLayout): TunnelPair {
+  return { left: { x: 0, y: row }, right: { x: layout.width - 1, y: row } }
 }
 
 function graphDistance(maze: Pick<Maze, 'width' | 'height' | 'cells' | 'tunnels'>, start: Point) {
@@ -276,20 +607,21 @@ function graphDistance(maze: Pick<Maze, 'width' | 'height' | 'cells' | 'tunnels'
   return distances
 }
 
-function makeCollectibles(maze: Pick<Maze, 'width' | 'height' | 'cells' | 'tunnels'>) {
+function makeCollectibles(maze: Pick<Maze, 'width' | 'height' | 'cells' | 'tunnels'>, layout: MazeLayout) {
   const pellets = new Set<string>()
-  const insidePen = (point: Point) => point.x > PEN_BOUNDS.x && point.x < PEN_BOUNDS.x + PEN_BOUNDS.width - 1 && point.y > PEN_BOUNDS.y && point.y < PEN_BOUNDS.y + PEN_BOUNDS.height - 1
-  for (let y = 0; y < MAZE_HEIGHT; y += 1) for (let x = 0; x < MAZE_WIDTH; x += 1) {
+  const { penBounds, spawn } = layout
+  const insidePen = (point: Point) => point.x > penBounds.x && point.x < penBounds.x + penBounds.width - 1 && point.y > penBounds.y && point.y < penBounds.y + penBounds.height - 1
+  for (let y = 0; y < layout.height; y += 1) for (let x = 0; x < layout.width; x += 1) {
     const point = { x, y }
-    if (maze.cells[y][x] === 0 && !insidePen(point) && pointKey(point) !== pointKey(SPAWN)) pellets.add(pointKey(point))
+    if (maze.cells[y][x] === 0 && !insidePen(point) && pointKey(point) !== pointKey(spawn)) pellets.add(pointKey(point))
   }
 
-  const distances = graphDistance(maze, PEN_HOME)
+  const distances = graphDistance(maze, layout.penHome)
   const quadrants = [
-    (point: Point) => point.x < MAZE_WIDTH / 2 && point.y < MAZE_HEIGHT / 2,
-    (point: Point) => point.x > MAZE_WIDTH / 2 && point.y < MAZE_HEIGHT / 2,
-    (point: Point) => point.x < MAZE_WIDTH / 2 && point.y > MAZE_HEIGHT / 2,
-    (point: Point) => point.x > MAZE_WIDTH / 2 && point.y > MAZE_HEIGHT / 2,
+    (point: Point) => point.x < layout.width / 2 && point.y < layout.height / 2,
+    (point: Point) => point.x > layout.width / 2 && point.y < layout.height / 2,
+    (point: Point) => point.x < layout.width / 2 && point.y > layout.height / 2,
+    (point: Point) => point.x > layout.width / 2 && point.y > layout.height / 2,
   ]
   const candidates = [...pellets].map((key) => { const [x, y] = key.split(',').map(Number); return { x, y } })
   const itemPoints = quadrants.map((quadrant) => candidates.filter(quadrant).sort((a, b) => (distances.get(pointKey(b)) ?? 0) - (distances.get(pointKey(a)) ?? 0))[0]).filter(Boolean)
@@ -298,18 +630,27 @@ function makeCollectibles(maze: Pick<Maze, 'width' | 'height' | 'cells' | 'tunne
   return { pellets, items }
 }
 
-export function createMaze(seed: number, level = 1): Maze {
+export function createMaze(seed: number, level = 1, version: MazeVersion = CURRENT_MAZE_VERSION): Maze {
+  const layout = LAYOUTS[version]
   const mixedSeed = (seed ^ Math.imul(level, 0x9e3779b9)) >>> 0
   const random = mulberry32(mixedSeed)
-  const tunnelRow = level === 1 ? LEVEL_ONE_TUNNEL_ROW : (random() < 0.5 ? 6 : 10)
-  const edges = level === 1 ? generateLevelOneEdges() : generateProceduralEdges(random)
-  const cells = carveMaze(edges, tunnelRow)
-  const tunnels = [tunnelPair(tunnelRow)]
+  const tunnelRow = level === 1 ? layout.levelOneTunnelRow : layout.proceduralTunnelRows[random() < 0.5 ? 0 : 1]
+  const tunnels = [tunnelPair(tunnelRow, layout)]
   const theme = (level - 1) % 9
-  const furniture = buildFurniture(cells, theme)
-  const base = { width: MAZE_WIDTH, height: MAZE_HEIGHT, cells, tunnels }
-  const { pellets, items } = makeCollectibles(base)
-  return { ...base, pellets, items, spawn: { ...SPAWN }, pen: { ...PEN_HOME }, furniture, theme, seed }
+  let cells: Cell[][]
+  let furniture: FurniturePiece[]
+  if (version === CURRENT_MAZE_VERSION) {
+    const world = buildCompactWorld(level === 1 ? 1013905050 : mixedSeed, tunnelRow, theme, layout)
+    cells = world.cells
+    furniture = world.furniture
+  } else {
+    const edges = level === 1 ? generateLevelOneEdges(layout) : generateProceduralEdges(random, layout)
+    cells = carveMaze(edges, tunnelRow, layout)
+    furniture = buildFurniture(cells, theme, layout)
+  }
+  const base = { width: layout.width, height: layout.height, cells, tunnels }
+  const { pellets, items } = makeCollectibles(base, layout)
+  return { ...base, pellets, items, spawn: { ...layout.spawn }, pen: { ...layout.penHome }, furniture, theme, seed }
 }
 
 export function isWalkable(maze: Pick<Maze, 'width' | 'height' | 'cells'>, point: Point) {

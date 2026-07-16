@@ -37,7 +37,7 @@ function App() {
     void audio.start()
     const nextTicket = await startRankedRun()
     setTicket(nextTicket)
-    gameRef.current?.start(nextTicket.seed)
+    gameRef.current?.start(nextTicket.seed, nextTicket.mazeVersion)
   }
 
   const openLeaderboard = async () => {

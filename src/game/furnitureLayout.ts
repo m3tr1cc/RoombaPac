@@ -104,7 +104,7 @@ export function planFurniturePlacements(piece: FurniturePiece, theme: number): F
       if (a.cells.length !== b.cells.length) return b.cells.length - a.cells.length
       const aTheme = Number(aDefinition.themes.includes(theme))
       const bTheme = Number(bDefinition.themes.includes(theme))
-      if (aTheme !== bTheme) return bTheme - aTheme
+      if (piece.generationRole !== 'helper' && aTheme !== bTheme) return bTheme - aTheme
       const aFamilyUses = familyUses.get(aDefinition.family) ?? 0
       const bFamilyUses = familyUses.get(bDefinition.family) ?? 0
       if (aFamilyUses !== bFamilyUses) return aFamilyUses - bFamilyUses

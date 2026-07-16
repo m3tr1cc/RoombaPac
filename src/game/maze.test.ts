@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { availableDirections, createMaze, furnitureCells, neighborPoint, reachableCount } from './maze'
+import { availableDirections, COMPACT_HELPER_LIMITS, COMPACT_OBSTACLE_QUOTAS, createMaze, CURRENT_MAZE_VERSION, furnitureCells, LEGACY_MAZE_VERSION, MAZE_HEIGHT, MAZE_WIDTH, neighborPoint, reachableCount } from './maze'
 import { pointKey, type ObstacleCategory } from './types'
 
-const insidePen = (x: number, y: number) => x >= 13 && x <= 17 && y >= 7 && y <= 9
+const insidePen = (x: number, y: number) => x >= 11 && x <= 15 && y >= 6 && y <= 8
 
 describe('Pac-Man-style furniture mazes', () => {
   it('keeps the annotated level-one blueprint fixed across run seeds', () => {
@@ -10,8 +10,19 @@ describe('Pac-Man-style furniture mazes', () => {
     const second = createMaze(4_242_424, 1)
     expect(first.cells).toEqual(second.cells)
     expect(first.furniture).toEqual(second.furniture)
-    expect(first.tunnels).toEqual([{ left: { x: 0, y: 8 }, right: { x: 30, y: 8 } }])
-    expect(new Set(first.furniture.map((piece) => piece.category))).toEqual(new Set<ObstacleCategory>([1, 2, 3, 4, 5, 6, 7, 8, 9]))
+    expect(first).toMatchObject({ width: MAZE_WIDTH, height: MAZE_HEIGHT, spawn: { x: 13, y: 13 }, pen: { x: 13, y: 7 } })
+    expect(first.tunnels).toEqual([{ left: { x: 0, y: 7 }, right: { x: 26, y: 7 } }])
+    expect(first.pellets.size).toBeGreaterThanOrEqual(150)
+    expect(first.pellets.size).toBeLessThanOrEqual(170)
+    expect(new Set(first.furniture.map((piece) => piece.category))).toEqual(new Set<ObstacleCategory>([1, 2, 3, 5, 6, 7, 8, 9]))
+  })
+
+  it('retains the legacy board for ranked runs started by version-one clients', () => {
+    const legacy = createMaze(1, 1, LEGACY_MAZE_VERSION)
+    expect(legacy).toMatchObject({ width: 31, height: 17, spawn: { x: 15, y: 15 }, pen: { x: 15, y: 8 } })
+    expect(legacy.tunnels).toEqual([{ left: { x: 0, y: 8 }, right: { x: 30, y: 8 } }])
+    expect(legacy.pellets.size).toBe(277)
+    expect(CURRENT_MAZE_VERSION).toBe(2)
   })
 
   it('is deterministic for the same run seed and level', () => {
@@ -28,25 +39,59 @@ describe('Pac-Man-style furniture mazes', () => {
     const walkable = maze.cells.flat().filter((cell) => cell === 0).length
     expect(reachableCount(maze)).toBe(walkable)
     expect(maze.items.size).toBe(4)
-    expect(maze.pellets.size).toBeGreaterThan(180)
+    expect(maze.pellets.size).toBeGreaterThanOrEqual(150)
+    expect(maze.pellets.size).toBeLessThanOrEqual(170)
     for (const key of [...maze.pellets, ...maze.items]) {
       const [x, y] = key.split(',').map(Number)
       expect(maze.cells[y][x]).toBe(0)
     }
   })
 
-  it.each([1, 2, 3, 8, 25])('builds symmetric single-lane loop networks for level %i', (level) => {
+  it.each([1, 2, 3, 8, 25])('builds symmetric connected routes without dead ends for level %i', (level) => {
     const maze = createMaze(987654, level)
     for (let y = 0; y < maze.height; y += 1) {
       expect(maze.cells[y]).toEqual([...maze.cells[y]].reverse())
       for (let x = 0; x < maze.width; x += 1) {
         if (maze.cells[y][x] === 0 && !insidePen(x, y)) expect(availableDirections(maze, { x, y }).length).toBeGreaterThanOrEqual(2)
-        if (x < maze.width - 1 && y < maze.height - 1 && !insidePen(x, y)) {
-          const openSquare = maze.cells[y][x] === 0 && maze.cells[y][x + 1] === 0 && maze.cells[y + 1][x] === 0 && maze.cells[y + 1][x + 1] === 0
-          expect(openSquare).toBe(false)
+        if (x < maze.width - 1 && y < maze.height - 1) {
+          const points = [[x, y], [x + 1, y], [x, y + 1], [x + 1, y + 1]] as const
+          const openSquare = points.every(([squareX, squareY]) => maze.cells[squareY][squareX] === 0)
+          const insideCage = points.every(([squareX, squareY]) => insidePen(squareX, squareY))
+          expect(openSquare && !insideCage).toBe(false)
         }
       }
     }
+  })
+
+  it('uses the rounded obstacle quota on fixed and procedural rooms', () => {
+    for (const maze of [createMaze(1, 1), createMaze(4_242, 2), createMaze(9_731, 17)]) {
+      const counts = { room: 0, linear: 0, junction: 0, hybrid: 0, corner: 0, block: 0 }
+      for (const piece of maze.furniture.filter(({ generationRole }) => generationRole === 'quota')) {
+        if (piece.kind === 'room') counts.room += 1
+        else if (piece.kind === 'straight' || piece.kind === 'stub') counts.linear += 1
+        else if (piece.kind === 'junction') counts.junction += 1
+        else if (piece.kind === 'alcove') counts.hybrid += 1
+        else if (piece.kind === 'corner') counts.corner += 1
+        else if (piece.kind === 'block') counts.block += 1
+      }
+      expect(counts).toEqual(COMPACT_OBSTACLE_QUOTAS)
+    }
+  })
+
+  it('uses bounded, multi-cell and directionally varied lane helpers', () => {
+    const layouts = new Set<string>()
+    for (let sample = 1; sample <= 20; sample += 1) {
+      const maze = createMaze(sample * 7_919, (sample % 9) + 2)
+      const helpers = maze.furniture.filter(({ generationRole }) => generationRole === 'helper')
+      const helperCells = helpers.flatMap(furnitureCells)
+      expect(helpers.length).toBeLessThanOrEqual(COMPACT_HELPER_LIMITS.pieces)
+      expect(helperCells.length).toBeLessThanOrEqual(COMPACT_HELPER_LIMITS.cells)
+      expect(helpers.every(({ cells, kind }) => kind === 'straight' && cells.length >= COMPACT_HELPER_LIMITS.minLength && cells.length <= COMPACT_HELPER_LIMITS.maxLength)).toBe(true)
+      expect(new Set(helpers.map(({ rotation }) => rotation))).toEqual(new Set([0, 1]))
+      expect(new Set(helperCells.map(pointKey)).size).toBe(helperCells.length)
+      layouts.add(helpers.map(({ cells }) => cells.map(pointKey).sort().join('|')).sort().join('::'))
+    }
+    expect(layouts.size).toBeGreaterThanOrEqual(4)
   })
 
   it('maps every collision wall into category-aware furniture metadata', () => {
@@ -81,9 +126,14 @@ describe('Pac-Man-style furniture mazes', () => {
       const maze = createMaze(seed * 7_919, (seed % 30) + 2)
       expect(reachableCount(maze)).toBe(maze.cells.flat().filter((cell) => cell === 0).length)
       expect(maze.items.size).toBe(4)
-      expect(maze.pellets.size).toBeGreaterThan(180)
+      expect(maze.pellets.size).toBeGreaterThanOrEqual(150)
+      expect(maze.pellets.size).toBeLessThanOrEqual(170)
       for (let y = 0; y < maze.height; y += 1) for (let x = 0; x < maze.width; x += 1) {
         if (maze.cells[y][x] === 0 && !insidePen(x, y)) expect(availableDirections(maze, { x, y }).length).toBeGreaterThanOrEqual(2)
+        if (x < maze.width - 1 && y < maze.height - 1) {
+          const square = [maze.cells[y][x], maze.cells[y][x + 1], maze.cells[y + 1][x], maze.cells[y + 1][x + 1]]
+          if (!insidePen(x, y)) expect(square.every((cell) => cell === 0)).toBe(false)
+        }
       }
     }
   })
