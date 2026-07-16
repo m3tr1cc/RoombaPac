@@ -66,4 +66,18 @@ describe('footprint-aware furniture layout', () => {
     expect(definitions.filter(({ family }) => family === 'chair').length / definitions.length).toBeLessThan(0.3)
     expect(selected.filter(({ cells }) => cells.length === 1).length / selected.length).toBeLessThan(0.15)
   })
+
+  it('diversifies helper furniture without changing its collision footprints', () => {
+    for (let level = 1; level <= 9; level += 1) {
+      const maze = createMaze(7_919, level)
+      const helpers = maze.furniture.filter(({ generationRole }) => generationRole === 'helper')
+      const placements = helpers.flatMap((helper) => planFurniturePlacements(helper, maze.theme))
+      const definitions = placements.map(({ spriteId }) => resolveFurnitureSprite(spriteId))
+      expect(new Set(definitions.map(({ id }) => id)).size).toBeGreaterThanOrEqual(5)
+      expect(new Set(definitions.map(({ family }) => family)).size).toBeGreaterThanOrEqual(3)
+      for (let index = 2; index < definitions.length; index += 1) {
+        expect(definitions[index].id === definitions[index - 1].id && definitions[index].id === definitions[index - 2].id).toBe(false)
+      }
+    }
+  })
 })

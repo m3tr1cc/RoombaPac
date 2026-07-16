@@ -2,6 +2,7 @@ export type Direction = 'up' | 'right' | 'down' | 'left'
 export type Cell = 0 | 1
 export type Point = { x: number; y: number }
 export type QuarterTurn = 0 | 1 | 2 | 3
+export type FurnitureGenerationRole = 'quota' | 'helper'
 export type ObstacleCategory = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 export type FurnitureKind = 'straight' | 'corner' | 'junction' | 'stub' | 'block' | 'alcove' | 'room' | 'pen' | 'boundary'
 export type FurniturePiece = Point & {
@@ -12,6 +13,7 @@ export type FurniturePiece = Point & {
   category: ObstacleCategory
   cells: Point[]
   variant: number
+  generationRole?: FurnitureGenerationRole
   rotation?: QuarterTurn
   flipX?: boolean
 }
