@@ -1,4 +1,5 @@
 import { availableDirections, createMaze, CURRENT_MAZE_VERSION, isWalkable, mulberry32, neighborPoint, type MazeVersion } from './maze'
+import { fitItemSprite, ITEM_SPRITES, pelletGeometry, PELLET_FILL_COLOR, PELLET_OUTLINE_COLOR } from './collectibleSprites'
 import { FURNITURE_ATLAS_URL, PET_CAGE_SPRITE, resolveBoundarySprite, resolveFurnitureSprite } from './furnitureSprites'
 import { planFurniturePlacements } from './furnitureLayout'
 import { PET_ATLAS_URL, resolvePetSprite, type PetSpriteFrame } from './petSprites'
@@ -13,8 +14,6 @@ const FLOOR_RECTS = [
   [24, 1095, 116, 115], [165, 1095, 116, 115], [306, 1095, 116, 115], [445, 1095, 116, 115],
   [579, 1095, 110, 115], [710, 1095, 115, 115], [841, 1095, 105, 115], [966, 1095, 109, 115], [1091, 1095, 129, 115],
 ] as const
-const ITEM_RECTS = Array.from({ length: 16 }, (_, index) => [28 + index * 75, 621, 58, 64] as const)
-
 function actorPoint(actor: Actor): Point {
   const delta = DIRS[actor.direction]
   return { x: actor.x + delta.x * actor.progress, y: actor.y + delta.y * actor.progress }
@@ -140,16 +139,19 @@ export class GameEngine {
       else { ctx.fillStyle = this.maze.theme % 2 ? '#dbc49b' : '#d6bd8e'; ctx.fillRect(dx, dy, cell + 0.5, cell + 0.5) }
     }
     this.drawFurniture(ctx, cell, ox, oy)
-    ctx.fillStyle = '#f6df78'
+    const pellet = pelletGeometry(cell)
+    ctx.fillStyle = PELLET_FILL_COLOR
+    ctx.strokeStyle = PELLET_OUTLINE_COLOR
+    ctx.lineWidth = pellet.lineWidth
     for (const key of this.maze.pellets) {
       const [x, y] = key.split(',').map(Number)
-      ctx.beginPath(); ctx.arc(ox + (x + .5) * cell, oy + (y + .5) * cell, Math.max(2, cell * .105), 0, Math.PI * 2); ctx.fill()
+      ctx.beginPath(); ctx.arc(ox + (x + .5) * cell, oy + (y + .5) * cell, pellet.radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke()
     }
     let itemIndex = 0
     for (const key of this.maze.items) {
       const [x, y] = key.split(',').map(Number)
-      const pulse = 1 + Math.sin(now / 180 + itemIndex) * .12
-      this.drawAtlas(ctx, ITEM_RECTS[(this.level * 3 + itemIndex) % ITEM_RECTS.length], ox + (x + .5) * cell, oy + (y + .5) * cell, cell * .86 * pulse)
+      const sprite = ITEM_SPRITES[(this.level * 3 + itemIndex) % ITEM_SPRITES.length]
+      this.drawItemSprite(ctx, sprite.rect, ox + (x + .5) * cell, oy + (y + .5) * cell, cell * .86)
       itemIndex += 1
     }
     const frightened = now < this.frightenedUntil
@@ -179,8 +181,9 @@ export class GameEngine {
     }
   }
 
-  private drawAtlas(ctx: CanvasRenderingContext2D, rect: readonly [number, number, number, number], x: number, y: number, size: number) {
-    ctx.drawImage(this.atlas, rect[0], rect[1], rect[2], rect[3], x - size / 2, y - size / 2, size, size)
+  private drawItemSprite(ctx: CanvasRenderingContext2D, rect: readonly [number, number, number, number], x: number, y: number, maxSize: number) {
+    const fitted = fitItemSprite(rect, x, y, maxSize)
+    ctx.drawImage(this.atlas, rect[0], rect[1], rect[2], rect[3], fitted.x, fitted.y, fitted.width, fitted.height)
   }
 
   private drawRoombaSprite(ctx: CanvasRenderingContext2D, frame: RoombaSpriteFrame, x: number, y: number, height: number) {
