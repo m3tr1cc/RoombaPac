@@ -58,12 +58,31 @@ describe('furniture sprite catalog', () => {
           (sideways ? blocksWide : blocksHigh) * FURNITURE_REFERENCE_CELL,
         ])
         expect(frame.anchor).toEqual([frame.referenceSize[0] / 2, frame.referenceSize[1] / 2])
+        expect(frame.authored).toBe(true)
+
+        const [left, top, right, bottom] = frame.opaqueBounds
+        const [referenceWidth, referenceHeight] = frame.referenceSize
+        expect(left).toBeGreaterThanOrEqual(3)
+        expect(top).toBeGreaterThanOrEqual(3)
+        expect(right).toBeLessThanOrEqual(referenceWidth - 3)
+        expect(bottom).toBeLessThanOrEqual(referenceHeight - 3)
+
+        const visibleWidth = right - left
+        const visibleHeight = bottom - top
+        expect(visibleWidth / referenceWidth).toBeGreaterThanOrEqual(referenceWidth > referenceHeight ? 0.65 : 0.35)
+        expect(visibleHeight / referenceHeight).toBeGreaterThanOrEqual(referenceHeight > referenceWidth ? 0.65 : 0.35)
       }
 
       if (definition.collisionEligible) {
         expect(new Set(definition.frames.map(({ rect }) => rect.join(','))).size).toBe(4)
       }
     }
+  })
+
+  it('builds every direction from authored masters instead of bitmap rotation', () => {
+    const builder = readFileSync(resolve(process.cwd(), 'scripts/build_furniture_atlas.py'), 'utf8')
+    expect(builder).not.toMatch(/legacy_orientations|Image\.Transpose\.ROTATE/)
+    expect(builder).not.toMatch(/source_atlas\.crop/)
   })
 
   it('provides varied one-cell fallbacks without relying on chairs', () => {

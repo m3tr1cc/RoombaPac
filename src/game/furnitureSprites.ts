@@ -16,6 +16,8 @@ export type FurnitureSpriteFrame = {
   rect: AtlasRect
   anchor: readonly [x: number, y: number]
   referenceSize: readonly [width: number, height: number]
+  opaqueBounds: readonly [left: number, top: number, right: number, bottom: number]
+  authored: true
 }
 
 export type FurnitureSpriteFrames = readonly [

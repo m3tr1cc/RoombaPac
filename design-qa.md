@@ -24,7 +24,7 @@
 - Fonts and typography: the existing RoombaPac HUD typography and hierarchy are unchanged and remain legible at both checked viewports.
 - Spacing and layout rhythm: exact module footprints align furniture centers to the cell grid, preserve one-cell hallways, and keep the cage centered.
 - Colors and visual tokens: the warm floor tile remains continuous beneath transparent furniture; no extra brown underlay changes the world palette.
-- Image quality and asset fidelity: all 75 catalog entries now expose four atlas frames on a consistent 96-pixel-per-cell grid. Directional furniture is authored or normalized per view, including full-length vertical sofas, while Canvas uses uniform nearest-neighbor scaling with no furniture rotation or footprint stretching.
+- Image quality and asset fidelity: all 75 catalog entries expose four authored atlas frames on a consistent 96-pixel-per-cell grid. Length-specific sofa, dresser, appliance, corner, alcove, and room masters preserve full footprints in every direction; component-based extraction keeps complete sprites together even when source art crosses a board quadrant. Canvas uses uniform nearest-neighbor scaling with no furniture rotation or footprint stretching.
 - Copy and content: no user-facing copy changed; scoring, lives, and level labels remain correct.
 - Icons and interactions: existing Phosphor controls remain aligned and functional; run start and a touch direction were exercised.
 - Accessibility and responsiveness: semantic labels remain present, mobile touch targets remain usable, and no new motion is introduced.
@@ -52,6 +52,9 @@
 7. P1 — Quota-only placement left broad open floor regions that did not read as Pac-Man-style lanes.
    - Fix: added a deterministic constrained helper pass that breaks every open 2×2 area while preserving symmetry, connectivity, tunnel wrapping, and no-dead-end routes. Helper artwork is diversified independently from its collision geometry.
    - Post-fix evidence: the refreshed desktop and mobile captures show continuous single-cell routes and varied two-cell furniture helpers.
+8. P1 — The first directional-atlas pass was based before the collectible-contrast merge, retained literal rotation fallbacks for several families, and split oversized source art at 2×2 board boundaries.
+   - Fix: rebased onto the outlined-pellet implementation, removed the bitmap-rotation path, replaced every remaining family with authored views, and extracts complete opaque components before fitting them to fixed world-space frames.
+   - Post-fix evidence: `docs/qa/furniture-v2-contact-sheet.png`, `docs/qa/furniture-v2-desktop-paused.png`, and the refreshed mobile captures show full-length views, stable padding, outlined pellets, and no clipped furniture.
 
 **Findings**
 

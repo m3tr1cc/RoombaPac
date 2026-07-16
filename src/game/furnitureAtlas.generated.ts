@@ -17,7 +17,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        9,
+        5,
+        87,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -33,7 +40,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -49,7 +63,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        91,
+        84
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -65,7 +86,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     }
   ],
   "orange-armchair": [
@@ -83,7 +111,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        9,
+        5,
+        87,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -99,7 +134,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -115,7 +157,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        91,
+        84
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -131,7 +180,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     }
   ],
   "brown-stool": [
@@ -149,7 +205,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        9,
+        5,
+        87,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -165,7 +228,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -181,7 +251,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        91,
+        84
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -197,7 +274,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     }
   ],
   "green-desk-chair": [
@@ -215,7 +299,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        9,
+        5,
+        87,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -231,7 +322,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -247,7 +345,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        91,
+        84
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -263,7 +368,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     }
   ],
   "blue-desk-chair": [
@@ -281,7 +393,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        9,
+        5,
+        87,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -297,7 +416,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -313,7 +439,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        91,
+        84
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -329,7 +462,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     }
   ],
   "beige-desk-chair": [
@@ -347,7 +487,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        9,
+        5,
+        87,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -363,7 +510,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -379,7 +533,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        91,
+        84
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -395,7 +556,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     }
   ],
   "narrow-nightstand": [
@@ -413,7 +581,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        80,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -429,7 +604,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -445,7 +627,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        10,
+        5,
+        86,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -461,7 +650,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     }
   ],
   "red-desk-chair": [
@@ -479,7 +675,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        9,
+        5,
+        87,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -495,7 +698,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -511,7 +721,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        91,
+        84
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -527,7 +744,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     }
   ],
   "green-side-chair": [
@@ -545,7 +769,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        9,
+        5,
+        87,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -561,7 +792,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -577,7 +815,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        91,
+        84
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -593,7 +838,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     }
   ],
   "plant-stand": [
@@ -611,7 +863,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        21,
+        5,
+        74,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -627,7 +886,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        26,
+        5,
+        69,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -643,7 +909,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        22,
+        5,
+        73,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -659,7 +932,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        27,
+        5,
+        69,
+        91
+      ],
+      "authored": true
     }
   ],
   "etched-cabinet": [
@@ -677,7 +957,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        80,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -693,7 +980,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -709,7 +1003,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        10,
+        5,
+        86,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -725,7 +1026,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     }
   ],
   "stone-pedestal": [
@@ -743,7 +1051,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        26,
+        91,
+        70
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -759,7 +1074,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        28,
+        5,
+        67,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -775,7 +1097,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        26,
+        91,
+        70
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -791,7 +1120,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        28,
+        5,
+        67,
+        91
+      ],
+      "authored": true
     }
   ],
   "tall-nightstand": [
@@ -809,7 +1145,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        80,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -825,7 +1168,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -841,7 +1191,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        10,
+        5,
+        86,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -857,7 +1214,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     }
   ],
   "green-ottoman": [
@@ -875,7 +1239,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        9,
+        5,
+        87,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -891,7 +1262,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -907,7 +1285,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        91,
+        84
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -923,7 +1308,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     }
   ],
   "orange-ottoman": [
@@ -941,7 +1333,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        9,
+        5,
+        87,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -957,7 +1356,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -973,7 +1379,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        91,
+        84
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -989,7 +1402,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     }
   ],
   "wooden-bench": [
@@ -1007,7 +1427,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        26,
+        91,
+        70
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1023,7 +1450,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        28,
+        5,
+        67,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1039,7 +1473,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        26,
+        91,
+        70
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1055,7 +1496,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        28,
+        5,
+        67,
+        91
+      ],
+      "authored": true
     }
   ],
   "compact-washer": [
@@ -1073,7 +1521,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        80,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1089,7 +1544,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1105,7 +1567,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        80,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1121,7 +1590,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     }
   ],
   "compact-dryer": [
@@ -1139,7 +1615,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        80,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1155,7 +1638,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1171,7 +1661,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        80,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1187,7 +1684,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     }
   ],
   "utility-bin": [
@@ -1205,7 +1709,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        80,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1221,7 +1732,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1237,7 +1755,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        80,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1253,7 +1778,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     }
   ],
   "green-club-chair": [
@@ -1271,7 +1803,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        9,
+        5,
+        87,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1287,7 +1826,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1303,7 +1849,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        91,
+        84
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1319,7 +1872,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     }
   ],
   "beige-club-chair": [
@@ -1337,7 +1897,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        9,
+        5,
+        87,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1353,7 +1920,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1369,7 +1943,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        91,
+        84
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1385,7 +1966,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     }
   ],
   "red-club-chair": [
@@ -1403,7 +1991,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        9,
+        5,
+        87,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1419,7 +2014,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1435,7 +2037,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        91,
+        84
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1451,7 +2060,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        82,
+        91
+      ],
+      "authored": true
     }
   ],
   "small-drawer": [
@@ -1469,7 +2085,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        80,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1485,7 +2108,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1501,7 +2131,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        10,
+        5,
+        86,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1517,7 +2154,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     }
   ],
   "medium-drawer-a": [
@@ -1535,7 +2179,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        80,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1551,7 +2202,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1567,7 +2225,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        10,
+        5,
+        86,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1583,7 +2248,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     }
   ],
   "medium-drawer-b": [
@@ -1601,7 +2273,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        80,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1617,7 +2296,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1633,7 +2319,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        10,
+        5,
+        86,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1649,7 +2342,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     }
   ],
   "long-drawer": [
@@ -1667,7 +2367,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        80,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1683,7 +2390,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        14,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1699,7 +2413,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        10,
+        5,
+        86,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1715,7 +2436,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        81,
+        91
+      ],
+      "authored": true
     }
   ],
   "short-dresser-a": [
@@ -1733,7 +2461,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        9,
+        187,
+        86
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1749,7 +2484,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        90,
+        187
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1765,7 +2507,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        187,
+        85
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1781,7 +2530,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        90,
+        187
+      ],
+      "authored": true
     }
   ],
   "short-dresser-b": [
@@ -1799,7 +2555,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        9,
+        187,
+        86
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1815,7 +2578,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        90,
+        187
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1831,7 +2601,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        187,
+        85
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1847,7 +2624,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        90,
+        187
+      ],
+      "authored": true
     }
   ],
   "short-green-sofa": [
@@ -1865,7 +2649,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        185,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1881,7 +2672,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        11,
+        5,
+        85,
+        187
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1897,7 +2695,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        187,
+        87
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1913,7 +2718,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        13,
+        5,
+        83,
+        187
+      ],
+      "authored": true
     }
   ],
   "short-red-sofa": [
@@ -1931,7 +2743,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        185,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1947,7 +2766,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        11,
+        5,
+        85,
+        187
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1963,7 +2789,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        187,
+        87
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -1979,7 +2812,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        13,
+        5,
+        83,
+        187
+      ],
+      "authored": true
     }
   ],
   "short-blue-sofa": [
@@ -1997,7 +2837,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        185,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2013,7 +2860,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        11,
+        5,
+        85,
+        187
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2029,7 +2883,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        187,
+        87
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2045,7 +2906,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        13,
+        5,
+        83,
+        187
+      ],
+      "authored": true
     }
   ],
   "short-sideboard": [
@@ -2063,7 +2931,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        9,
+        187,
+        86
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2079,7 +2954,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        90,
+        187
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2095,7 +2977,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        187,
+        85
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2111,7 +3000,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        90,
+        187
+      ],
+      "authored": true
     }
   ],
   "stub-tea-table": [
@@ -2129,7 +3025,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        12,
+        5,
+        180,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2145,7 +3048,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        89,
+        187
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2161,7 +3071,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        12,
+        5,
+        179,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2177,7 +3094,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        89,
+        187
+      ],
+      "authored": true
     }
   ],
   "stub-snack-table": [
@@ -2195,7 +3119,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        12,
+        5,
+        180,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2211,7 +3142,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        89,
+        187
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2227,7 +3165,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        12,
+        5,
+        179,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2243,7 +3188,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        89,
+        187
+      ],
+      "authored": true
     }
   ],
   "drink-sideboard": [
@@ -2261,7 +3213,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        9,
+        187,
+        86
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2277,7 +3236,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        90,
+        187
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2293,7 +3259,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        187,
+        85
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2309,7 +3282,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        90,
+        187
+      ],
+      "authored": true
     }
   ],
   "wide-dresser": [
@@ -2327,7 +3307,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        9,
+        187,
+        86
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2343,7 +3330,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        90,
+        187
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2359,7 +3353,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        187,
+        85
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2375,7 +3376,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        90,
+        187
+      ],
+      "authored": true
     }
   ],
   "utility-counter": [
@@ -2393,7 +3401,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        28,
+        5,
+        163,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2409,7 +3424,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        30,
+        91,
+        161
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2425,7 +3447,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        29,
+        5,
+        163,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2441,7 +3470,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        29,
+        91,
+        162
+      ],
+      "authored": true
     }
   ],
   "low-tea-table": [
@@ -2459,7 +3495,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        12,
+        5,
+        180,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2475,7 +3518,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        89,
+        187
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2491,7 +3541,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        12,
+        5,
+        179,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2507,7 +3564,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        6,
+        5,
+        89,
+        187
+      ],
+      "authored": true
     }
   ],
   "medium-dresser-a": [
@@ -2525,7 +3589,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        13,
+        5,
+        275,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2541,7 +3612,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        30,
+        91,
+        257
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2557,7 +3635,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        9,
+        5,
+        279,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2573,7 +3658,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        28,
+        91,
+        259
+      ],
+      "authored": true
     }
   ],
   "medium-green-sofa": [
@@ -2591,7 +3683,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        22,
+        5,
+        265,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2607,7 +3706,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        14,
+        91,
+        274
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2623,7 +3729,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        272,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2639,7 +3752,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        6,
+        91,
+        281
+      ],
+      "authored": true
     }
   ],
   "medium-red-sofa": [
@@ -2657,7 +3777,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        22,
+        5,
+        265,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2673,7 +3800,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        14,
+        91,
+        274
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2689,7 +3823,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        272,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2705,7 +3846,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        6,
+        91,
+        281
+      ],
+      "authored": true
     }
   ],
   "medium-blue-sofa": [
@@ -2723,7 +3871,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        22,
+        5,
+        265,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2739,7 +3894,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        14,
+        91,
+        274
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2755,7 +3917,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        272,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2771,7 +3940,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        6,
+        91,
+        281
+      ],
+      "authored": true
     }
   ],
   "long-dresser": [
@@ -2789,7 +3965,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         384,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        32,
+        5,
+        352,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2805,7 +3988,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         384
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        62,
+        91,
+        322
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2821,7 +4011,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         384,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        38,
+        5,
+        346,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2837,7 +4034,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         384
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        59,
+        91,
+        325
+      ],
+      "authored": true
     }
   ],
   "long-green-sofa": [
@@ -2855,7 +4059,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        22,
+        5,
+        265,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2871,7 +4082,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        14,
+        91,
+        274
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2887,7 +4105,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        272,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2903,7 +4128,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        6,
+        91,
+        281
+      ],
+      "authored": true
     }
   ],
   "long-red-sofa": [
@@ -2921,7 +4153,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        22,
+        5,
+        265,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2937,7 +4176,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        14,
+        91,
+        274
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2953,7 +4199,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        272,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -2969,7 +4222,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        6,
+        91,
+        281
+      ],
+      "authored": true
     }
   ],
   "long-blue-sofa": [
@@ -2987,7 +4247,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        22,
+        5,
+        265,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3003,7 +4270,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        14,
+        91,
+        274
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3019,7 +4293,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        272,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3035,7 +4316,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        6,
+        91,
+        281
+      ],
+      "authored": true
     }
   ],
   "green-cabinet-corner": [
@@ -3053,7 +4341,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        283,
+        280
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3069,7 +4364,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        283,
+        279
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3085,7 +4387,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        283,
+        277
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3101,7 +4410,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        283,
+        278
+      ],
+      "authored": true
     }
   ],
   "green-cabinet-corner-mirror": [
@@ -3119,7 +4435,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        283,
+        279
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3135,7 +4458,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        283,
+        277
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3151,7 +4481,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        283,
+        278
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3167,7 +4504,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        283,
+        280
+      ],
+      "authored": true
     }
   ],
   "blue-cabinet-corner": [
@@ -3185,7 +4529,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        283,
+        280
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3201,7 +4552,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        283,
+        279
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3217,7 +4575,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        283,
+        277
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3233,7 +4598,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        283,
+        278
+      ],
+      "authored": true
     }
   ],
   "blue-cabinet-corner-mirror": [
@@ -3251,7 +4623,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        283,
+        279
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3267,7 +4646,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        283,
+        277
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3283,7 +4669,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        283,
+        278
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3299,7 +4692,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        283,
+        280
+      ],
+      "authored": true
     }
   ],
   "red-library-corner": [
@@ -3317,7 +4717,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        283,
+        276
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3333,7 +4740,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        283,
+        276
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3349,7 +4763,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        10,
+        5,
+        278,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3365,7 +4786,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        10,
+        5,
+        278,
+        283
+      ],
+      "authored": true
     }
   ],
   "red-library-corner-mirror": [
@@ -3383,7 +4811,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        283,
+        276
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3399,7 +4834,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        10,
+        5,
+        278,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3415,7 +4857,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        10,
+        5,
+        278,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3431,7 +4880,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        12,
+        283,
+        276
+      ],
+      "authored": true
     }
   ],
   "red-kitchen-corner": [
@@ -3449,7 +4905,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        269
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3465,7 +4928,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        269
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3481,7 +4951,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        8,
+        5,
+        280,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3497,7 +4974,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        8,
+        5,
+        280,
+        283
+      ],
+      "authored": true
     }
   ],
   "red-kitchen-corner-mirror": [
@@ -3515,7 +4999,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        269
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3531,7 +5022,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        8,
+        5,
+        280,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3547,7 +5045,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        8,
+        5,
+        280,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3563,7 +5068,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        269
+      ],
+      "authored": true
     }
   ],
   "white-kitchen-corner": [
@@ -3581,7 +5093,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        269
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3597,7 +5116,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        269
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3613,7 +5139,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        8,
+        5,
+        280,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3629,7 +5162,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        8,
+        5,
+        280,
+        283
+      ],
+      "authored": true
     }
   ],
   "white-kitchen-corner-mirror": [
@@ -3647,7 +5187,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        269
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3663,7 +5210,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        8,
+        5,
+        280,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3679,7 +5233,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        8,
+        5,
+        280,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3695,7 +5256,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        269
+      ],
+      "authored": true
     }
   ],
   "mixed-kitchen-corner": [
@@ -3713,7 +5281,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        269
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3729,7 +5304,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        269
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3745,7 +5327,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        8,
+        5,
+        280,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3761,7 +5350,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        8,
+        5,
+        280,
+        283
+      ],
+      "authored": true
     }
   ],
   "mixed-kitchen-corner-mirror": [
@@ -3779,7 +5375,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        269
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3795,7 +5398,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        8,
+        5,
+        280,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3811,7 +5421,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        8,
+        5,
+        280,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3827,7 +5444,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        269
+      ],
+      "authored": true
     }
   ],
   "wood-t-junction": [
@@ -3845,7 +5469,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        16,
+        283,
+        271
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3861,7 +5492,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        89,
+        283,
+        199
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3877,7 +5515,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        270
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3893,7 +5538,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        90,
+        283,
+        198
+      ],
+      "authored": true
     }
   ],
   "garden-t-junction": [
@@ -3911,7 +5563,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        16,
+        283,
+        271
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3927,7 +5586,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        89,
+        283,
+        199
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3943,7 +5609,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        270
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3959,7 +5632,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        90,
+        283,
+        198
+      ],
+      "authored": true
     }
   ],
   "kitchen-t-junction": [
@@ -3977,7 +5657,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        269
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -3993,7 +5680,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        269
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4009,7 +5703,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        8,
+        5,
+        280,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4025,7 +5726,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        8,
+        5,
+        280,
+        283
+      ],
+      "authored": true
     }
   ],
   "blue-t-junction": [
@@ -4043,7 +5751,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        283,
+        280
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4059,7 +5774,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        283,
+        279
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4075,7 +5797,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        283,
+        277
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4091,7 +5820,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        10,
+        283,
+        278
+      ],
+      "authored": true
     }
   ],
   "green-sofa-alcove": [
@@ -4109,7 +5845,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        17,
+        283,
+        270
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4125,7 +5868,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        20,
+        5,
+        267,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4141,7 +5891,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        19,
+        283,
+        268
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4157,7 +5914,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        22,
+        5,
+        266,
+        283
+      ],
+      "authored": true
     }
   ],
   "red-sofa-alcove": [
@@ -4175,7 +5939,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        17,
+        283,
+        270
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4191,7 +5962,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        20,
+        5,
+        267,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4207,7 +5985,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        19,
+        283,
+        268
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4223,7 +6008,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        22,
+        5,
+        266,
+        283
+      ],
+      "authored": true
     }
   ],
   "blue-sofa-alcove": [
@@ -4241,7 +6033,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        17,
+        283,
+        270
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4257,7 +6056,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        20,
+        5,
+        267,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4273,7 +6079,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        19,
+        283,
+        268
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4289,7 +6102,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        22,
+        5,
+        266,
+        283
+      ],
+      "authored": true
     }
   ],
   "library-alcove": [
@@ -4307,7 +6127,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        25,
+        283,
+        262
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4323,7 +6150,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        21,
+        283,
+        267
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4339,7 +6173,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        23,
+        283,
+        265
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4355,7 +6196,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        20,
+        283,
+        267
+      ],
+      "authored": true
     }
   ],
   "library-room": [
@@ -4373,7 +6221,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         480,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        31,
+        5,
+        448,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4389,7 +6244,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         480
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        19,
+        283,
+        461
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4405,7 +6267,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         480,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        31,
+        5,
+        448,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4421,7 +6290,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         480
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        18,
+        283,
+        462
+      ],
+      "authored": true
     }
   ],
   "kitchen-room": [
@@ -4439,7 +6315,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         576,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        24,
+        5,
+        552,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4455,7 +6338,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         576
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        79,
+        283,
+        497
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4471,7 +6361,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         576,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        71,
+        5,
+        504,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4487,7 +6384,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         576
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        70,
+        283,
+        505
+      ],
+      "authored": true
     }
   ],
   "bedroom-room": [
@@ -4505,7 +6409,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         480,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        15,
+        5,
+        464,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4521,7 +6432,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         480
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        52,
+        283,
+        427
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4537,7 +6455,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         480,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        48,
+        5,
+        431,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4553,7 +6478,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         480
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        30,
+        283,
+        449
+      ],
+      "authored": true
     }
   ],
   "study-room": [
@@ -4571,7 +6503,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         576,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        26,
+        5,
+        549,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4587,7 +6526,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         576
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        71,
+        283,
+        504
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4603,7 +6549,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         576,
         288
-      ]
+      ],
+      "opaqueBounds": [
+        37,
+        5,
+        538,
+        283
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4619,7 +6572,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         288,
         576
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        72,
+        283,
+        504
+      ],
+      "authored": true
     }
   ],
   "stone-fireplace": [
@@ -4637,7 +6597,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        25,
+        5,
+        167,
+        187
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4653,7 +6620,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        41,
+        5,
+        150,
+        187
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4669,7 +6643,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        19,
+        5,
+        173,
+        187
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4685,7 +6666,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         192,
         192
-      ]
+      ],
+      "opaqueBounds": [
+        41,
+        5,
+        150,
+        187
+      ],
+      "authored": true
     }
   ],
   "round-rug": [
@@ -4703,7 +6691,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        7,
+        91,
+        89
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4719,7 +6714,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        91,
+        88
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4735,7 +6737,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        7,
+        91,
+        89
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4751,7 +6760,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        6,
+        91,
+        89
+      ],
+      "authored": true
     }
   ],
   "green-rug": [
@@ -4769,7 +6785,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        7,
+        91,
+        89
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4785,7 +6808,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        91,
+        88
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4801,7 +6831,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        7,
+        91,
+        89
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4817,7 +6854,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        6,
+        91,
+        89
+      ],
+      "authored": true
     }
   ],
   "red-rug": [
@@ -4835,7 +6879,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        7,
+        91,
+        89
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4851,7 +6902,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        91,
+        88
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4867,7 +6925,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        7,
+        91,
+        89
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4883,7 +6948,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        6,
+        91,
+        89
+      ],
+      "authored": true
     }
   ],
   "blue-rug": [
@@ -4901,7 +6973,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        7,
+        91,
+        89
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4917,7 +6996,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        8,
+        91,
+        88
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4933,7 +7019,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        7,
+        91,
+        89
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -4949,7 +7042,14 @@ export const FURNITURE_ATLAS_FRAMES = {
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        6,
+        91,
+        89
+      ],
+      "authored": true
     }
   ]
 } as const
@@ -4967,7 +7067,14 @@ export const PET_CAGE_FRAME = {
   "referenceSize": [
     672,
     480
-  ]
+  ],
+  "opaqueBounds": [
+    49,
+    5,
+    622,
+    475
+  ],
+  "authored": true
 } as const
 export const BOUNDARY_ATLAS_FRAMES = [
   [
@@ -4985,7 +7092,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        31,
+        91,
+        64
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -5001,7 +7115,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        33,
+        5,
+        63,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -5017,7 +7138,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        32,
+        91,
+        64
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -5033,7 +7161,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        32,
+        5,
+        63,
+        91
+      ],
+      "authored": true
     }
   ],
   [
@@ -5051,7 +7186,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        31,
+        91,
+        64
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -5067,7 +7209,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        33,
+        5,
+        63,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -5083,7 +7232,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        32,
+        91,
+        64
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -5099,7 +7255,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        32,
+        5,
+        63,
+        91
+      ],
+      "authored": true
     }
   ],
   [
@@ -5117,7 +7280,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        31,
+        91,
+        64
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -5133,7 +7303,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        33,
+        5,
+        63,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -5149,7 +7326,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        32,
+        91,
+        64
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -5165,7 +7349,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        32,
+        5,
+        63,
+        91
+      ],
+      "authored": true
     }
   ],
   [
@@ -5183,7 +7374,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        31,
+        91,
+        64
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -5199,7 +7397,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        33,
+        5,
+        63,
+        91
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -5215,7 +7420,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        5,
+        32,
+        91,
+        64
+      ],
+      "authored": true
     },
     {
       "rect": [
@@ -5231,7 +7443,14 @@ export const BOUNDARY_ATLAS_FRAMES = [
       "referenceSize": [
         96,
         96
-      ]
+      ],
+      "opaqueBounds": [
+        32,
+        5,
+        63,
+        91
+      ],
+      "authored": true
     }
   ]
 ] as const

@@ -9,6 +9,7 @@ from __future__ import annotations
 import colorsys
 import json
 import re
+from collections import deque
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -16,7 +17,6 @@ from PIL import Image, ImageDraw, ImageEnhance
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE_ATLAS = ROOT / "art/furniture-v2/legacy-furniture-atlas.png"
 OUTPUT_ATLAS = ROOT / "public/assets/game/roombapac-furniture-v2.png"
 GENERATED_TS = ROOT / "src/game/furnitureAtlas.generated.ts"
 CONTACT_SHEET = ROOT / "docs/qa/furniture-v2-contact-sheet.png"
@@ -26,7 +26,8 @@ ART_DIR = ROOT / "art/furniture-v2"
 REFERENCE_CELL = 96
 ATLAS_EDGE = 4096
 GUTTER = 4
-FRAME_MARGIN = 6
+FRAME_MARGIN = 5
+COMPONENT_ALPHA_THRESHOLD = 48
 
 
 @dataclass(frozen=True)
@@ -72,52 +73,138 @@ def alpha_crop(image: Image.Image) -> Image.Image:
     return image.crop(bounds)
 
 
-def board_frames(name: str) -> list[Image.Image]:
+def opaque_components(image: Image.Image) -> list[tuple[int, tuple[int, int, int, int]]]:
+    width, height = image.size
+    alpha = image.getchannel("A").tobytes()
+    visited = bytearray(width * height)
+    components: list[tuple[int, tuple[int, int, int, int]]] = []
+    for start, value in enumerate(alpha):
+        if value < COMPONENT_ALPHA_THRESHOLD or visited[start]:
+            continue
+        queue = deque([start])
+        visited[start] = 1
+        area = 0
+        left = right = start % width
+        top = bottom = start // width
+        while queue:
+            index = queue.popleft()
+            x, y = index % width, index // width
+            area += 1
+            left, right = min(left, x), max(right, x)
+            top, bottom = min(top, y), max(bottom, y)
+            if x and not visited[index - 1] and alpha[index - 1] >= COMPONENT_ALPHA_THRESHOLD:
+                visited[index - 1] = 1
+                queue.append(index - 1)
+            if x + 1 < width and not visited[index + 1] and alpha[index + 1] >= COMPONENT_ALPHA_THRESHOLD:
+                visited[index + 1] = 1
+                queue.append(index + 1)
+            if y and not visited[index - width] and alpha[index - width] >= COMPONENT_ALPHA_THRESHOLD:
+                visited[index - width] = 1
+                queue.append(index - width)
+            if y + 1 < height and not visited[index + width] and alpha[index + width] >= COMPONENT_ALPHA_THRESHOLD:
+                visited[index + width] = 1
+                queue.append(index + width)
+        if area >= 256:
+            components.append((area, (left, top, right + 1, bottom + 1)))
+    return components
+
+
+def board_frames(name: str, corner_layout: bool = False) -> list[Image.Image]:
     board = Image.open(ART_DIR / name).convert("RGBA")
-    half_width, half_height = board.width // 2, board.height // 2
-    boxes = [
-        (0, 0, half_width, half_height),
-        (half_width, 0, board.width, half_height),
-        (0, half_height, half_width, board.height),
-        (half_width, half_height, board.width, board.height),
-    ]
-    return [alpha_crop(board.crop(box)) for box in boxes]
+    half_width, half_height = board.width / 2, board.height / 2
+    by_quadrant: list[list[tuple[int, tuple[int, int, int, int]]]] = [[], [], [], []]
+    for component in opaque_components(board):
+        _, (left, top, right, bottom) = component
+        center_x, center_y = (left + right) / 2, (top + bottom) / 2
+        quadrant = int(center_x >= half_width) + int(center_y >= half_height) * 2
+        by_quadrant[quadrant].append(component)
+
+    frames: list[Image.Image] = []
+    for quadrant, components in enumerate(by_quadrant):
+        if not components:
+            raise RuntimeError(f"{name} has no sprite component in quadrant {quadrant}")
+        _, (left, top, right, bottom) = max(components, key=lambda component: component[0])
+        padding = 4
+        box = (
+            max(0, left - padding),
+            max(0, top - padding),
+            min(board.width, right + padding),
+            min(board.height, bottom + padding),
+        )
+        frames.append(alpha_crop(board.crop(box)))
+    # Corner boards are arranged spatially TL, TR, BL, BR. Convert that to
+    # clockwise quarter turns TL, TR, BR, BL without rotating any pixels.
+    return [frames[0], frames[1], frames[3], frames[2]] if corner_layout else frames
 
 
 MASTER_FRAMES = {
     "armchair": board_frames("armchair-directions.png"),
-    "appliance": board_frames("appliance-directions.png"),
+    "appliance-1": board_frames("appliance-1-directions.png"),
+    "appliance-2": board_frames("appliance-2-directions.png"),
     "boundary": board_frames("boundary-directions.png"),
-    "corner": board_frames("corner-directions.png"),
-    "dresser": board_frames("dresser-directions.png"),
-    "sofa": board_frames("sofa-directions.png"),
+    "cabinet-1": board_frames("cabinet-1-directions.png"),
+    "corner": board_frames("corner-directions.png", corner_layout=True),
+    "dresser-2": board_frames("dresser-2-directions.png"),
+    "dresser-3": board_frames("dresser-3-directions.png"),
+    "dresser-4": board_frames("dresser-4-directions.png"),
+    "fireplace": board_frames("fireplace-directions.png"),
+    "junction": board_frames("junction-directions.png"),
+    "kitchen-corner": board_frames("kitchen-corner-directions.png", corner_layout=True),
+    "library-alcove": board_frames("library-alcove-directions.png"),
+    "library-corner": board_frames("library-corner-directions.png", corner_layout=True),
+    "library-room": board_frames("library-room-directions.png"),
+    "kitchen-room": board_frames("kitchen-room-directions.png"),
+    "bedroom-room": board_frames("bedroom-room-directions.png"),
+    "study-room": board_frames("study-room-directions.png"),
+    "plant-stand": board_frames("plant-stand-directions.png"),
+    "rug": board_frames("rug-directions.png"),
+    "sofa-2": board_frames("sofa-2-directions.png"),
+    "sofa-3": board_frames("sofa-3-directions.png"),
+    "sofa-alcove": board_frames("sofa-alcove-directions.png"),
     "table": board_frames("table-directions.png"),
 }
-# The corner board is laid out spatially (top-left, top-right, bottom-left,
-# bottom-right); quarter turns need the two lower quadrants in reverse order.
-MASTER_FRAMES["corner"] = [
-    MASTER_FRAMES["corner"][0],
-    MASTER_FRAMES["corner"][1],
-    MASTER_FRAMES["corner"][3],
-    MASTER_FRAMES["corner"][2],
-]
 
 
-def master_for(sprite: SpriteSource) -> str | None:
+def master_for(sprite: SpriteSource) -> str:
     longest = max(sprite.footprint)
     if sprite.family == "chair":
         return "armchair"
-    if sprite.family == "sofa" and longest >= 2:
-        return "sofa"
-    if sprite.family == "cabinet" and longest >= 2:
-        return "dresser"
-    if sprite.family == "table" and longest >= 2:
+    if sprite.family == "sofa":
+        return "armchair" if longest == 1 else f"sofa-{min(longest, 3)}"
+    if sprite.family == "cabinet":
+        return "cabinet-1" if longest == 1 else f"dresser-{longest}"
+    if sprite.family == "table":
         return "table"
-    if sprite.family == "appliance" and longest >= 2:
-        return "appliance"
-    if sprite.family == "corner" and sprite.id.startswith(("green-", "blue-")):
-        return "corner"
-    return None
+    if sprite.family == "appliance":
+        return f"appliance-{longest}"
+    if sprite.family == "plant":
+        return "plant-stand"
+    if sprite.family == "rug":
+        return "rug"
+    if sprite.family == "fireplace":
+        return "fireplace"
+    if sprite.family == "corner":
+        if sprite.id.startswith(("green-", "blue-")):
+            return "corner"
+        if "library" in sprite.id:
+            return "library-corner"
+        return "kitchen-corner"
+    if sprite.family == "junction":
+        return "kitchen-corner" if sprite.id == "kitchen-t-junction" else "corner" if sprite.id == "blue-t-junction" else "junction"
+    if sprite.family == "alcove":
+        return "library-alcove" if sprite.id == "library-alcove" else "sofa-alcove"
+    if sprite.family == "room":
+        return sprite.id
+    raise RuntimeError(f"No authored directional master for {sprite.id}")
+
+
+def authored_frames(sprite: SpriteSource) -> list[Image.Image]:
+    frames = MASTER_FRAMES[master_for(sprite)]
+    if sprite.id.endswith("-mirror"):
+        # Mirrored catalog masks begin in the top-right corner. Select the
+        # separately authored matching views in clockwise order.
+        return [frames[1], frames[2], frames[3], frames[0]]
+    return frames
 
 
 def target_hue(sprite_id: str) -> float | None:
@@ -131,6 +218,8 @@ def target_hue(sprite_id: str) -> float | None:
         return 0.11
     if "green" in sprite_id or "garden" in sprite_id:
         return 0.25
+    if "brown" in sprite_id or "wooden" in sprite_id:
+        return 0.075
     return None
 
 
@@ -180,26 +269,10 @@ def fit_frame(image: Image.Image, size: tuple[int, int], generated: bool) -> Ima
     return frame
 
 
-def legacy_orientations(source: Image.Image) -> list[Image.Image]:
+def sprite_frames(sprite: SpriteSource) -> list[Image.Image]:
+    sources = [tint(frame, sprite.id) for frame in authored_frames(sprite)]
     return [
-        source.copy(),
-        source.transpose(Image.Transpose.ROTATE_270),
-        source.transpose(Image.Transpose.ROTATE_180),
-        source.transpose(Image.Transpose.ROTATE_90),
-    ]
-
-
-def sprite_frames(source_atlas: Image.Image, sprite: SpriteSource) -> list[Image.Image]:
-    master_name = master_for(sprite)
-    if master_name:
-        sources = [tint(frame, sprite.id) for frame in MASTER_FRAMES[master_name]]
-        generated = True
-    else:
-        x, y, width, height = sprite.rect
-        sources = legacy_orientations(alpha_crop(source_atlas.crop((x, y, x + width, y + height))))
-        generated = False
-    return [
-        fit_frame(source, oriented_size(sprite.footprint, rotation), generated)
+        fit_frame(source, oriented_size(sprite.footprint, rotation), True)
         for rotation, source in enumerate(sources)
     ]
 
@@ -244,10 +317,15 @@ def frame_metadata(frame: PackedFrame) -> dict[str, list[int]]:
     if frame.rect is None:
         raise RuntimeError(f"Frame {frame.key} was not packed")
     width, height = frame.image.size
+    opaque_bounds = frame.image.getchannel("A").getbbox()
+    if opaque_bounds is None:
+        raise RuntimeError(f"Frame {frame.key} has no visible pixels")
     return {
         "rect": frame.rect,
         "anchor": [width // 2, height // 2],
         "referenceSize": [width, height],
+        "opaqueBounds": list(opaque_bounds),
+        "authored": True,
     }
 
 
@@ -300,13 +378,12 @@ def write_contact_sheet(
 
 
 def main() -> None:
-    source_atlas = Image.open(SOURCE_ATLAS).convert("RGBA")
     packed_frames: list[PackedFrame] = []
     sprite_sets: dict[str, list[PackedFrame]] = {}
     for sprite in catalog():
         frames = [
             PackedFrame(f"sprite:{sprite.id}:{rotation}", image)
-            for rotation, image in enumerate(sprite_frames(source_atlas, sprite))
+            for rotation, image in enumerate(sprite_frames(sprite))
         ]
         sprite_sets[sprite.id] = frames
         packed_frames.extend(frames)
