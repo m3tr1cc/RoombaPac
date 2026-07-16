@@ -16,13 +16,13 @@ export default async function handler(request: VercelRequest, response: VercelRe
   try {
     const database = getDatabase()
     const playerHash = hashPrivate(body.playerToken)
-    const { data: session, error: sessionError } = await database.from('roombapac_run_sessions').select('id,player_hash,seed,expires_at,completed_at').eq('id', body.runId).maybeSingle()
+    const { data: session, error: sessionError } = await database.from('roombapac_run_sessions').select('id,player_hash,seed,maze_version,expires_at,completed_at').eq('id', body.runId).maybeSingle()
     if (sessionError) throw sessionError
     if (!session || session.player_hash !== playerHash) return response.status(404).json({ error: 'Run session not found' })
     if (session.completed_at) return response.status(409).json({ error: 'This run has already been submitted' })
     if (new Date(session.expires_at).getTime() < Date.now()) return response.status(410).json({ error: 'This run has expired' })
     let maximumDots = 0
-    for (let level = 1; level <= body.level; level += 1) maximumDots += createMaze(Number(session.seed), level).pellets.size
+    for (let level = 1; level <= body.level; level += 1) maximumDots += createMaze(Number(session.seed), level, session.maze_version).pellets.size
     if (body.dots > maximumDots || body.items > body.level * 4 || body.pets > Math.max(1, body.items) * 10) return response.status(422).json({ error: 'Run totals exceed the generated rooms' })
     if (body.durationMs < body.dots * 25 || body.durationMs > 6 * 60 * 60 * 1000) return response.status(422).json({ error: 'Run timing is not plausible' })
     const { data, error } = await database.rpc('submit_roombapac_run', {

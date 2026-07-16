@@ -1,10 +1,11 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import { GameEngine } from '../game/engine'
 import type { Sound } from '../game/audio'
+import type { MazeVersion } from '../game/maze'
 import type { Direction, GameSnapshot } from '../game/types'
 
 export type GameCanvasHandle = {
-  start: (seed: number) => void
+  start: (seed: number, mazeVersion: MazeVersion) => void
   reset: () => void
   togglePause: () => void
   pause: () => void
@@ -30,7 +31,7 @@ export const GameCanvas = forwardRef<GameCanvasHandle, GameCanvasProps>(function
   }
 
   useImperativeHandle(ref, () => ({
-    start: (seed) => engineRef.current?.start(seed),
+    start: (seed, mazeVersion) => engineRef.current?.start(seed, mazeVersion),
     reset: () => engineRef.current?.reset(),
     togglePause: () => engineRef.current?.togglePause(),
     pause: () => engineRef.current?.pause(),

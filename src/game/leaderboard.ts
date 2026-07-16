@@ -1,6 +1,8 @@
+import { CURRENT_MAZE_VERSION, type MazeVersion } from './maze'
+
 export type LeaderboardEntry = { rank: number; nickname: string; score: number; level: number; achievedAt: string }
 export type LeaderboardResponse = { entries: LeaderboardEntry[]; playerBest: LeaderboardEntry | null }
-export type RunTicket = { runId: string; seed: number; issuedAt: string; ranked: boolean }
+export type RunTicket = { runId: string; seed: number; issuedAt: string; mazeVersion: MazeVersion; ranked: boolean }
 
 const TOKEN_KEY = 'roombapac-player-token'
 const NAME_KEY = 'roombapac-nickname'
@@ -19,12 +21,12 @@ export const getSavedNickname = () => localStorage.getItem(NAME_KEY) ?? ''
 export async function startRankedRun(): Promise<RunTicket> {
   try {
     const response = await fetch('/api/runs-start', {
-      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ playerToken: getPlayerToken() }),
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ playerToken: getPlayerToken(), mazeVersion: CURRENT_MAZE_VERSION }),
     })
     if (!response.ok) throw new Error('Run service unavailable')
     return { ...(await response.json()), ranked: true }
   } catch {
-    return { runId: crypto.randomUUID(), seed: crypto.getRandomValues(new Uint32Array(1))[0], issuedAt: new Date().toISOString(), ranked: false }
+    return { runId: crypto.randomUUID(), seed: crypto.getRandomValues(new Uint32Array(1))[0], issuedAt: new Date().toISOString(), mazeVersion: CURRENT_MAZE_VERSION, ranked: false }
   }
 }
 

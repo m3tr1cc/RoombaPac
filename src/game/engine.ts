@@ -1,4 +1,4 @@
-import { availableDirections, createMaze, isWalkable, mulberry32, neighborPoint } from './maze'
+import { availableDirections, createMaze, CURRENT_MAZE_VERSION, isWalkable, mulberry32, neighborPoint, type MazeVersion } from './maze'
 import { FURNITURE_ATLAS_URL, PET_CAGE_SPRITE, resolveBoundarySprite, resolveFurnitureSprite } from './furnitureSprites'
 import { planFurniturePlacements } from './furnitureLayout'
 import { PET_ATLAS_URL, resolvePetSprite, type PetSpriteFrame } from './petSprites'
@@ -34,6 +34,7 @@ export class GameEngine {
   activeMs = 0
   frightenedUntil = 0
   private seed = 1
+  private mazeVersion: MazeVersion = CURRENT_MAZE_VERSION
   private transitionUntil = 0
   private graceUntil = 0
   private random = mulberry32(1)
@@ -60,11 +61,12 @@ export class GameEngine {
     return { mode: this.mode, score: this.score, level: this.level, lives: this.lives, dots: this.dots, items: this.items, pets: this.petsEaten, activeMs: this.activeMs }
   }
 
-  start(seed: number) {
+  start(seed: number, mazeVersion: MazeVersion = CURRENT_MAZE_VERSION) {
     this.seed = seed >>> 0
+    this.mazeVersion = mazeVersion
     this.random = mulberry32(this.seed)
     this.score = 0; this.level = 1; this.lives = 3; this.dots = 0; this.items = 0; this.petsEaten = 0; this.activeMs = 0
-    this.maze = createMaze(this.seed, 1)
+    this.maze = createMaze(this.seed, 1, this.mazeVersion)
     this.mode = 'playing'
     this.graceUntil = performance.now() + 1500
     this.resetActors()
@@ -74,7 +76,7 @@ export class GameEngine {
   reset() {
     this.mode = 'idle'
     this.score = 0; this.level = 1; this.lives = 3; this.dots = 0; this.items = 0; this.petsEaten = 0; this.activeMs = 0
-    this.maze = createMaze(this.seed || 1, 1)
+    this.maze = createMaze(this.seed || 1, 1, this.mazeVersion)
     this.resetActors()
     this.options.onSound('reset')
     this.emit()
@@ -105,7 +107,7 @@ export class GameEngine {
     }
     if (this.mode === 'level-clear' && now >= this.transitionUntil) {
       this.level += 1
-      this.maze = createMaze(this.seed, this.level)
+      this.maze = createMaze(this.seed, this.level, this.mazeVersion)
       this.resetActors()
       this.mode = 'playing'
       this.graceUntil = now + 1200

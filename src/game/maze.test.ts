@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { availableDirections, createMaze, furnitureCells, neighborPoint, reachableCount } from './maze'
+import { availableDirections, createMaze, CURRENT_MAZE_VERSION, furnitureCells, LEGACY_MAZE_VERSION, MAZE_HEIGHT, MAZE_WIDTH, neighborPoint, reachableCount } from './maze'
 import { pointKey, type ObstacleCategory } from './types'
 
-const insidePen = (x: number, y: number) => x >= 13 && x <= 17 && y >= 7 && y <= 9
+const insidePen = (x: number, y: number) => x >= 11 && x <= 15 && y >= 6 && y <= 8
 
 describe('Pac-Man-style furniture mazes', () => {
   it('keeps the annotated level-one blueprint fixed across run seeds', () => {
@@ -10,8 +10,19 @@ describe('Pac-Man-style furniture mazes', () => {
     const second = createMaze(4_242_424, 1)
     expect(first.cells).toEqual(second.cells)
     expect(first.furniture).toEqual(second.furniture)
-    expect(first.tunnels).toEqual([{ left: { x: 0, y: 8 }, right: { x: 30, y: 8 } }])
-    expect(new Set(first.furniture.map((piece) => piece.category))).toEqual(new Set<ObstacleCategory>([1, 2, 3, 4, 5, 6, 7, 8, 9]))
+    expect(first).toMatchObject({ width: MAZE_WIDTH, height: MAZE_HEIGHT, spawn: { x: 13, y: 13 }, pen: { x: 13, y: 7 } })
+    expect(first.tunnels).toEqual([{ left: { x: 0, y: 7 }, right: { x: 26, y: 7 } }])
+    expect(first.pellets.size).toBeGreaterThanOrEqual(200)
+    expect(first.pellets.size).toBeLessThanOrEqual(225)
+    expect(new Set(first.furniture.map((piece) => piece.category))).toEqual(new Set<ObstacleCategory>([1, 4, 5, 8, 9]))
+  })
+
+  it('retains the legacy board for ranked runs started by version-one clients', () => {
+    const legacy = createMaze(1, 1, LEGACY_MAZE_VERSION)
+    expect(legacy).toMatchObject({ width: 31, height: 17, spawn: { x: 15, y: 15 }, pen: { x: 15, y: 8 } })
+    expect(legacy.tunnels).toEqual([{ left: { x: 0, y: 8 }, right: { x: 30, y: 8 } }])
+    expect(legacy.pellets.size).toBe(277)
+    expect(CURRENT_MAZE_VERSION).toBe(2)
   })
 
   it('is deterministic for the same run seed and level', () => {
@@ -28,7 +39,8 @@ describe('Pac-Man-style furniture mazes', () => {
     const walkable = maze.cells.flat().filter((cell) => cell === 0).length
     expect(reachableCount(maze)).toBe(walkable)
     expect(maze.items.size).toBe(4)
-    expect(maze.pellets.size).toBeGreaterThan(180)
+    expect(maze.pellets.size).toBeGreaterThanOrEqual(200)
+    expect(maze.pellets.size).toBeLessThanOrEqual(225)
     for (const key of [...maze.pellets, ...maze.items]) {
       const [x, y] = key.split(',').map(Number)
       expect(maze.cells[y][x]).toBe(0)
@@ -81,7 +93,8 @@ describe('Pac-Man-style furniture mazes', () => {
       const maze = createMaze(seed * 7_919, (seed % 30) + 2)
       expect(reachableCount(maze)).toBe(maze.cells.flat().filter((cell) => cell === 0).length)
       expect(maze.items.size).toBe(4)
-      expect(maze.pellets.size).toBeGreaterThan(180)
+      expect(maze.pellets.size).toBeGreaterThanOrEqual(200)
+      expect(maze.pellets.size).toBeLessThanOrEqual(225)
       for (let y = 0; y < maze.height; y += 1) for (let x = 0; x < maze.width; x += 1) {
         if (maze.cells[y][x] === 0 && !insidePen(x, y)) expect(availableDirections(maze, { x, y }).length).toBeGreaterThanOrEqual(2)
       }

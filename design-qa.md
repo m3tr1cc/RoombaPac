@@ -2,12 +2,13 @@
 
 - Source visual truth: `docs/references/user-feedback-obstacle-placement.jpg`, `docs/references/annotated-pacman-map.png`, and `docs/references/furniture-obstacle-categories.png`
 - Implementation evidence: `docs/qa/desktop-building-blocks.png` and `docs/qa/mobile-building-blocks.png`
-- Viewports: 1440×810 desktop and 390×844 mobile portrait
-- State: fixed level-one board during active play
+- Viewports: 1440×810 desktop, 600×337 mobile landscape, and 390×844 mobile portrait
+- State: compact 27×15 fixed level-one board during active play
 
 **Full-view comparison evidence**
 
 - The revised implementation preserves the landscape composition, symmetry, single-lane loop network, central cage, obstacle islands, outer boundary, and side tunnels.
+- The active world now uses 27×15 cells and 210 level-one crumbs, down from 31×17 cells and 277 crumbs. The board remains nearly flush with the 16:9 frame while actors, collectibles, and furniture render about 15% larger.
 - Unlike the feedback capture, each collision component is assembled from exact one-, two-, and three-cell furniture modules. Sofas and bookcases remain proportionate instead of being stretched across arbitrary component bounds.
 - The brown collision-cell underlay has been removed. Transparent sprite space now reveals the same world floor tile used in the hallways.
 
@@ -40,6 +41,9 @@
 4. P1 — A brown fallback rectangle was painted beneath every collision wall, creating a second floor color around transparent furniture.
    - Fix: removed the collision-cell fill so the normal themed world tile is the only floor beneath furniture.
    - Post-fix evidence: both revised screenshots show continuous floor tiles through every transparent furniture gap.
+5. P1 — The 31×17 rooms contained roughly 285 crumbs and took too long to clear.
+   - Fix: reduced fixed and procedural rooms to 27×15 cells, with deterministic generation constrained to 200–225 crumbs.
+   - Post-fix evidence: the refreshed desktop and mobile landscape captures show the denser Pac-Man-like composition, larger game art, working HUD controls, and exposed touch pad.
 
 **Findings**
 
@@ -57,6 +61,7 @@
 - [x] Preserve the themed world floor beneath transparent furniture.
 - [x] Preserve single-lane connectivity and real wrap tunnels.
 - [x] Verify active desktop play and mobile touch controls.
+- [x] Verify the compact board fills the 16:9 surface without clipping at desktop and mobile landscape sizes.
 - [x] Check console warnings and errors at desktop and mobile viewports.
 
 **Follow-up Polish**
