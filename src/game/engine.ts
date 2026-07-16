@@ -1,5 +1,5 @@
 import { availableDirections, createMaze, CURRENT_MAZE_VERSION, isWalkable, mulberry32, neighborPoint, type MazeVersion } from './maze'
-import { fitItemSprite, ITEM_SPRITES, pelletColor } from './collectibleSprites'
+import { fitItemSprite, ITEM_SPRITES, pelletGeometry, PELLET_FILL_COLOR, PELLET_OUTLINE_COLOR } from './collectibleSprites'
 import { FURNITURE_ATLAS_URL, PET_CAGE_SPRITE, resolveBoundarySprite, resolveFurnitureSprite } from './furnitureSprites'
 import { planFurniturePlacements } from './furnitureLayout'
 import { PET_ATLAS_URL, resolvePetSprite, type PetSpriteFrame } from './petSprites'
@@ -139,10 +139,13 @@ export class GameEngine {
       else { ctx.fillStyle = this.maze.theme % 2 ? '#dbc49b' : '#d6bd8e'; ctx.fillRect(dx, dy, cell + 0.5, cell + 0.5) }
     }
     this.drawFurniture(ctx, cell, ox, oy)
-    ctx.fillStyle = pelletColor(this.maze.theme)
+    const pellet = pelletGeometry(cell)
+    ctx.fillStyle = PELLET_FILL_COLOR
+    ctx.strokeStyle = PELLET_OUTLINE_COLOR
+    ctx.lineWidth = pellet.lineWidth
     for (const key of this.maze.pellets) {
       const [x, y] = key.split(',').map(Number)
-      ctx.beginPath(); ctx.arc(ox + (x + .5) * cell, oy + (y + .5) * cell, Math.max(2, cell * .105), 0, Math.PI * 2); ctx.fill()
+      ctx.beginPath(); ctx.arc(ox + (x + .5) * cell, oy + (y + .5) * cell, pellet.radius, 0, Math.PI * 2); ctx.fill(); ctx.stroke()
     }
     let itemIndex = 0
     for (const key of this.maze.items) {

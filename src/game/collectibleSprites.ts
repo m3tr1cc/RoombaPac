@@ -2,10 +2,8 @@ import type { AtlasRect } from './petSprites'
 
 export const COLLECTIBLE_ATLAS_SIZE = { width: 1254, height: 1254 } as const
 
-export const YELLOW_PELLET_COLOR = '#f6df78'
-export const GREY_PELLET_COLOR = '#555555'
-
-const LIGHT_FLOOR_THEMES = new Set([1, 7])
+export const PELLET_FILL_COLOR = '#f6df78'
+export const PELLET_OUTLINE_COLOR = '#4b4640'
 
 export type ItemSpriteDefinition = {
   id: string
@@ -31,8 +29,11 @@ export const ITEM_SPRITES = [
   { id: 'stethoscope', rect: [1154, 624, 58, 60] },
 ] as const satisfies readonly ItemSpriteDefinition[]
 
-export function pelletColor(theme: number) {
-  return LIGHT_FLOOR_THEMES.has(theme) ? GREY_PELLET_COLOR : YELLOW_PELLET_COLOR
+export function pelletGeometry(cell: number) {
+  return {
+    radius: Math.max(2, cell * .105),
+    lineWidth: Math.max(1, cell * .04),
+  }
 }
 
 export function fitItemSprite(rect: AtlasRect, centerX: number, centerY: number, maxSize: number) {

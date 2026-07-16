@@ -4,25 +4,18 @@ import { describe, expect, it } from 'vitest'
 import {
   COLLECTIBLE_ATLAS_SIZE,
   fitItemSprite,
-  GREY_PELLET_COLOR,
   ITEM_SPRITES,
-  pelletColor,
-  YELLOW_PELLET_COLOR,
+  pelletGeometry,
+  PELLET_FILL_COLOR,
+  PELLET_OUTLINE_COLOR,
 } from './collectibleSprites'
 
 describe('collectible rendering metadata', () => {
-  it('uses grey pellets only on the two brightest floor themes', () => {
-    expect(Array.from({ length: 9 }, (_, theme) => pelletColor(theme))).toEqual([
-      YELLOW_PELLET_COLOR,
-      GREY_PELLET_COLOR,
-      YELLOW_PELLET_COLOR,
-      YELLOW_PELLET_COLOR,
-      YELLOW_PELLET_COLOR,
-      YELLOW_PELLET_COLOR,
-      YELLOW_PELLET_COLOR,
-      GREY_PELLET_COLOR,
-      YELLOW_PELLET_COLOR,
-    ])
+  it('uses one outlined yellow pellet treatment on every floor', () => {
+    expect(PELLET_FILL_COLOR).toBe('#f6df78')
+    expect(PELLET_OUTLINE_COLOR).toBe('#4b4640')
+    expect(pelletGeometry(10)).toEqual({ radius: 2, lineWidth: 1 })
+    expect(pelletGeometry(100)).toEqual({ radius: 10.5, lineWidth: 4 })
   })
 
   it('matches the production atlas and keeps every complete item crop inside it', () => {
