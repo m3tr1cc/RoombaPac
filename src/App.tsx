@@ -16,6 +16,7 @@ function App() {
   const [snapshot, setSnapshot] = useState(INITIAL)
   const [ticket, setTicket] = useState<RunTicket | null>(null)
   const [showLeaderboard, setShowLeaderboard] = useState(false)
+  const [restartAfterLeaderboard, setRestartAfterLeaderboard] = useState(false)
   const [leaderboard, setLeaderboard] = useState<LeaderboardResponse | null>(null)
   const [leaderboardError, setLeaderboardError] = useState('')
   const [leaderboardLoading, setLeaderboardLoading] = useState(false)
@@ -40,11 +41,18 @@ function App() {
     gameRef.current?.start(nextTicket.seed, nextTicket.mazeVersion)
   }
 
-  const openLeaderboard = async () => {
+  const openLeaderboard = async (restartOnClose = false) => {
+    setRestartAfterLeaderboard(restartOnClose)
     setShowLeaderboard(true); setLeaderboardLoading(true); setLeaderboardError('')
     try { setLeaderboard(await fetchLeaderboard()) }
     catch (error) { setLeaderboardError(error instanceof Error ? error.message : 'Leaderboard unavailable') }
     finally { setLeaderboardLoading(false) }
+  }
+
+  const closeLeaderboard = () => {
+    setShowLeaderboard(false)
+    setRestartAfterLeaderboard(false)
+    if (restartAfterLeaderboard) void start()
   }
 
   const saveScore = async (nickname: string) => {
@@ -53,7 +61,7 @@ function App() {
     try {
       await submitRun({ ticket, nickname, score: snapshot.score, level: snapshot.level, dots: snapshot.dots, items: snapshot.items, pets: snapshot.pets, durationMs: Math.round(snapshot.activeMs) })
       setShowName(false)
-      await openLeaderboard()
+      await openLeaderboard(true)
     } catch (error) { setSubmitError(error instanceof Error ? error.message : 'Could not save this run') }
     finally { setSubmitting(false) }
   }
@@ -111,8 +119,8 @@ function App() {
         </div>
       </section>
 
-      {showLeaderboard && <LeaderboardDialog data={leaderboard} error={leaderboardError} loading={leaderboardLoading} onClose={() => setShowLeaderboard(false)} />}
-      {showName && <NameDialog score={snapshot.score} submitting={submitting} error={submitError} onSubmit={(name) => void saveScore(name)} onSkip={() => setShowName(false)} />}
+      {showLeaderboard && <LeaderboardDialog data={leaderboard} error={leaderboardError} loading={leaderboardLoading} onClose={closeLeaderboard} />}
+      {showName && <NameDialog score={snapshot.score} submitting={submitting} error={submitError} onSubmit={(name) => void saveScore(name)} onSkip={() => void start()} />}
       {confirmReset && (
         <div className="dialog-backdrop">
           <section className="dialog confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="reset-title">
